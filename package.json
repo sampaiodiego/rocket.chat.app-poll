@@ -1,0 +1,7 @@
+{
+    "devDependencies": {
+        "@rocket.chat/apps-ts-definition": "file:///Users/diegosampaio/dev/Rocket.Chat.Apps-ts-definition",
+        "tslint": "^5.10.0",
+        "typescript": "^2.9.1"
+    }
+}

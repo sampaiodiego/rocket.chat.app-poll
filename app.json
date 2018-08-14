@@ -1,0 +1,15 @@
+{
+    "id": "c33fa1a6-68a7-491e-bf49-9d7b99671c48",
+    "version": "0.0.1",
+    "requiredApiVersion": "^0.9.13",
+    "iconFile": "icon.png",
+    "author": {
+        "name": "Diego Sampaio",
+        "homepage": "https://sampaio.site",
+        "support": "https://sampaio.site"
+    },
+    "name": "Poll",
+    "nameSlug": "poll",
+    "classFile": "PollApp.ts",
+    "description": "Simple Poll"
+}
