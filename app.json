@@ -1,7 +1,7 @@
 {
     "id": "c33fa1a6-68a7-491e-bf49-9d7b99671c48",
-    "version": "0.0.2",
-    "requiredApiVersion": "1.0.0",
+    "version": "1.0.0",
+    "requiredApiVersion": "1.3.2",
     "iconFile": "icon.png",
     "author": {
         "name": "Diego Sampaio",

@@ -2,7 +2,8 @@
     "extends": "tslint:recommended",
     "rules": {
       "array-type": [true, "generic"],
-      "member-access": true,
+	  "member-access": true,
+	  "no-bitwise": false,
       "no-console": [false],
       "no-duplicate-variable": true,
       "object-literal-sort-keys": false,
