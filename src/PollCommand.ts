@@ -1,7 +1,9 @@
 import { IHttp, IModify, IPersistence, IRead } from '@rocket.chat/apps-engine/definition/accessors';
+import { MessageActionButtonsAlignment } from '@rocket.chat/apps-engine/definition/messages/MessageActionButtonsAlignment';
 import { MessageActionType } from '@rocket.chat/apps-engine/definition/messages/MessageActionType';
 import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
 import { ISlashCommand, SlashCommandContext } from '@rocket.chat/apps-engine/definition/slashcommands';
+import { buildOptions } from './buildOptions';
 import { IPoll } from './IPoll';
 
 const clearQuotes = (item) => item.replace(/(^['"]|['"]$)/g, '');
@@ -33,27 +35,32 @@ export class PollCommand implements ISlashCommand {
             .setUsernameAlias('Poll');
 
         try {
-
             const UUID = this.UUID();
-            const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, UUID);
+
             const poll: IPoll = {
+                messageId: '',
                 options,
-                votes: options.map(() => 0),
-                voters: [],
+                totalVotes: 0,
+                votes: options.map(() => ({ quantity: 0, voters: [] })),
             };
 
-            await persis.createWithAssociation(poll, association);
+            builder.addAttachment(buildOptions(options, poll));
 
             builder.addAttachment({
+                color: '#73a7ce',
+                actionButtonsAlignment: MessageActionButtonsAlignment.HORIZONTAL,
                 actions: options.map((option: string, index: number) => ({
                     type: MessageActionType.BUTTON,
-                    text: option,
+                    text: `${index + 1}`,
                     msg_in_chat_window: true,
                     msg: `/vote ${UUID} ${index}`,
                 })),
             });
 
-            await modify.getCreator().finish(builder);
+            poll.messageId = await modify.getCreator().finish(builder);
+
+            const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, UUID);
+            await persis.createWithAssociation(poll, association);
         } catch (e) {
 
             builder.setText('An error occured when trying to send the gif :disappointed_relieved:');

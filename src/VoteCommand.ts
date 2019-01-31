@@ -1,9 +1,8 @@
 import { IHttp, IModify, IPersistence, IRead } from '@rocket.chat/apps-engine/definition/accessors';
 import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
 import { ISlashCommand, SlashCommandContext } from '@rocket.chat/apps-engine/definition/slashcommands';
+import { buildOptions } from './buildOptions';
 import { IPoll } from './IPoll';
-
-const clearQuotes = (item) => item.replace(/(^['"]|['"]$)/g, '');
 
 export class VoteCommand implements ISlashCommand {
 
@@ -39,36 +38,33 @@ export class VoteCommand implements ISlashCommand {
 
         const poll = polls[0] as IPoll;
 
-        const builder = modify.getCreator().startMessage()
-            .setSender(context.getSender())
-            .setRoom(context.getRoom())
-            .setAvatarUrl('https://user-images.githubusercontent.com/8591547/44113440-751b9ff8-9fde-11e8-9e8c-8a555e6e382b.png')
-            .setUsernameAlias('Poll');
+        const { username } = context.getSender();
 
-        const sendError = (error: string) => {
-            builder.setText(error);
-            modify.getNotifier().notifyUser(context.getSender(), builder.getMessage());
-        };
+        const hasVoted = poll.votes[voteIndex].voters.indexOf(username);
 
-        const userID = context.getSender().id;
-
-        if (poll.voters.includes(userID)) {
-            return sendError(`You can't vote twice, *@${context.getSender().username}*`!);
+        if (hasVoted !== -1) {
+            poll.totalVotes--;
+            poll.votes[voteIndex].quantity--;
+            poll.votes[voteIndex].voters.splice(hasVoted, 1);
+        } else {
+            poll.totalVotes++;
+            poll.votes[voteIndex].quantity++;
+            poll.votes[voteIndex].voters.push(username);
         }
-
-        poll.votes[voteIndex] += 1;
-        poll.voters.push(userID);
         await persis.updateByAssociation(association, poll);
 
-        const results = poll.options.map((option: string, index: number) => `${option} - *${poll.votes[index]}*`);
-        const text = `Poll results:\n${results.join('\n')}`;
+        const message = await modify.getUpdater().message(poll.messageId, context.getSender());
+        message.setEditor(message.getSender());
 
-        builder.setText(text);
+        const attachments = message.getAttachments();
+        attachments[0] = buildOptions(poll.options, poll);
+        message.setAttachments(attachments);
 
         try {
-            await modify.getCreator().finish(builder);
+            modify.getUpdater().finish(message);
         } catch (e) {
-            return sendError('Could not vote :(');
+            message.setText('Could not vote :(');
+            modify.getNotifier().notifyUser(context.getSender(), message.getMessage());
         }
     }
 }
