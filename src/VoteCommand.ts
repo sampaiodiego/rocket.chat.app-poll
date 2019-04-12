@@ -1,6 +1,7 @@
 import { IHttp, IModify, IPersistence, IRead } from '@rocket.chat/apps-engine/definition/accessors';
 import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
 import { ISlashCommand, SlashCommandContext } from '@rocket.chat/apps-engine/definition/slashcommands';
+import { PollApp } from '../PollApp';
 import { buildOptions } from './buildOptions';
 import { IPoll } from './IPoll';
 
@@ -10,6 +11,9 @@ export class VoteCommand implements ISlashCommand {
     public i18nParamsExample = 'params_example';
     public i18nDescription = 'cmd_description';
     public providesPreview = false;
+
+    public constructor(private readonly app: PollApp) {
+    }
 
     public async executor(context: SlashCommandContext, read: IRead, modify: IModify, http: IHttp, persis: IPersistence): Promise<void> {
 
@@ -61,10 +65,18 @@ export class VoteCommand implements ISlashCommand {
         message.setAttachments(attachments);
 
         try {
-            modify.getUpdater().finish(message);
+            await modify.getUpdater().finish(message);
         } catch (e) {
-            message.setText('Could not vote :(');
-            modify.getNotifier().notifyUser(context.getSender(), message.getMessage());
+            console.error('Error voting: ', e);
+
+            this.app.getLogger().error('Error voting: ', e);
+
+            const errorMessage = modify.getCreator().startMessage()
+                .setSender(context.getSender())
+                .setRoom(context.getRoom())
+                .setText('Could not vote :(')
+                .setUsernameAlias('Poll');
+            modify.getNotifier().notifyUser(context.getSender(), errorMessage.getMessage());
         }
     }
 }

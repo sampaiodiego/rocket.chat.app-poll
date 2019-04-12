@@ -14,6 +14,6 @@ export class PollApp extends App {
 
     public async initialize(configuration: IConfigurationExtend): Promise<void> {
         await configuration.slashCommands.provideSlashCommand(new PollCommand());
-        await configuration.slashCommands.provideSlashCommand(new VoteCommand());
+        await configuration.slashCommands.provideSlashCommand(new VoteCommand(this));
     }
 }
