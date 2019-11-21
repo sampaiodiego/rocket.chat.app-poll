@@ -1,4 +1,5 @@
 import { IHttp, IModify, IPersistence, IRead } from '@rocket.chat/apps-engine/definition/accessors';
+import { BlockitResponseType, IBlockitAction, IBlockitActionHandler, IBlockitResponse } from '@rocket.chat/apps-engine/definition/blockit';
 import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
 import { ISlashCommand, SlashCommandContext } from '@rocket.chat/apps-engine/definition/slashcommands';
 import { PollApp } from '../PollApp';

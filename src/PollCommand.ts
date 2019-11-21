@@ -5,6 +5,7 @@ import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket
 import { ISlashCommand, SlashCommandContext } from '@rocket.chat/apps-engine/definition/slashcommands';
 import { buildOptions } from './buildOptions';
 import { IPoll } from './IPoll';
+import { TextObjectType, BlockElementType, IButtonElement } from '@rocket.chat/apps-engine/definition/blocks';
 
 const clearQuotes = (item) => item.replace(/(^['"]|['"]$)/g, '');
 
@@ -17,56 +18,98 @@ export class PollCommand implements ISlashCommand {
 
     public async executor(context: SlashCommandContext, read: IRead, modify: IModify, http: IHttp, persis: IPersistence): Promise<void> {
 
-        const params = context.getArguments().join(' ');
-        const match = params.match(/((["'])(?:(?=(\\?))\3.)*?\2)/g);
-
-        if (!match) {
-            throw new Error('Invalid params');
-        }
-
-        const options = match.map(clearQuotes);
-        const question = options.shift();
-
         const builder = modify.getCreator().startMessage()
             .setSender(context.getSender())
             .setRoom(context.getRoom())
             .setAvatarUrl('https://user-images.githubusercontent.com/8591547/44113440-751b9ff8-9fde-11e8-9e8c-8a555e6e382b.png')
-            .setText(`_${question}_`)
+            // .setText('Choose an action')
             .setUsernameAlias('Poll');
 
-        try {
-            const UUID = this.UUID();
+        const block = modify.getCreator().getBlockBuilder();
+        block.addSectionBlock({
+            text: {
+                type: TextObjectType.PLAINTEXT,
+                text: 'Choose an action',
+            },
+        });
 
-            const poll: IPoll = {
-                messageId: '',
-                options,
-                totalVotes: 0,
-                votes: options.map(() => ({ quantity: 0, voters: [] })),
-            };
+        block.addActionsBlock({
+            elements: [
+                {
+                    type: BlockElementType.BUTTON,
+                    text: {
+                        type: TextObjectType.PLAINTEXT,
+                        text: 'Create poll',
+                    },
+                    actionId: 'create',
+                    value: 'create',
+                } as IButtonElement,
+                // {
+                //     type: BlockElementType.BUTTON,
+                //     text: {
+                //         type: TextObjectType.PLAINTEXT,
+                //         text: 'Show results',
+                //     },
+                //     actionId: 'result',
+                //     value: 'show',
+                // } as IButtonElement,
+            ],
+        });
 
-            builder.addAttachment(buildOptions(options, poll));
+        builder.setBlocks(block);
 
-            builder.addAttachment({
-                color: '#73a7ce',
-                actionButtonsAlignment: MessageActionButtonsAlignment.HORIZONTAL,
-                actions: options.map((option: string, index: number) => ({
-                    type: MessageActionType.BUTTON,
-                    text: `${index + 1}`,
-                    msg_in_chat_window: true,
-                    msg: `/vote ${UUID} ${index}`,
-                })),
-            });
+        modify.getNotifier().notifyUser(context.getSender(), builder.getMessage());
 
-            poll.messageId = await modify.getCreator().finish(builder);
+        // const params = context.getArguments().join(' ');
+        // const match = params.match(/((["'])(?:(?=(\\?))\3.)*?\2)/g);
 
-            const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, UUID);
-            await persis.createWithAssociation(poll, association);
-        } catch (e) {
+        // if (!match) {
+        //     throw new Error('Invalid params');
+        // }
 
-            builder.setText('An error occured when trying to send the gif :disappointed_relieved:');
+        // const options = match.map(clearQuotes);
+        // const question = options.shift();
 
-            modify.getNotifier().notifyUser(context.getSender(), builder.getMessage());
-        }
+        // const builder = modify.getCreator().startMessage()
+        //     .setSender(context.getSender())
+        //     .setRoom(context.getRoom())
+        //     .setAvatarUrl('https://user-images.githubusercontent.com/8591547/44113440-751b9ff8-9fde-11e8-9e8c-8a555e6e382b.png')
+        //     .setText(`_${question}_`)
+        //     .setUsernameAlias('Poll');
+
+        // try {
+        //     const UUID = this.UUID();
+
+        //     const poll: IPoll = {
+        //         messageId: '',
+        //         options,
+        //         totalVotes: 0,
+        //         votes: options.map(() => ({ quantity: 0, voters: [] })),
+        //     };
+
+        //     builder.addAttachment(buildOptions(options, poll));
+
+        //     builder.addAttachment({
+        //         color: '#73a7ce',
+        //         actionButtonsAlignment: MessageActionButtonsAlignment.HORIZONTAL,
+        //         actions: options.map((option: string, index: number) => ({
+        //             type: MessageActionType.BUTTON,
+        //             text: `${index + 1}`,
+        //             msg_in_chat_window: true,
+        //             msg: `/vote ${UUID} ${index}`,
+        //         })),
+        //     });
+
+        //     poll.messageId = await modify.getCreator().finish(builder);
+
+        //     const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, UUID);
+        //     await persis.createWithAssociation(poll, association);
+        // } catch (e) {
+
+        //     builder.setText('An error occured when trying to send the gif :disappointed_relieved:');
+
+        //     modify.getNotifier().notifyUser(context.getSender(), builder.getMessage());
+        // }
     }
 
     private UUID() {
