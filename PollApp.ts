@@ -93,13 +93,13 @@ export class PollApp extends App implements IBlockitActionHandler {
                     //     ],
                     // } as IActionsBlock,
                 ],
-            } as IBlockitResponse;
+            };
         }
 
         return {
             success: true,
             triggerId: data.triggerId,
-        } as IBlockitResponse;
+        };
     }
 
     public async initialize(configuration: IConfigurationExtend): Promise<void> {
