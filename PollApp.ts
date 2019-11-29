@@ -1,6 +1,6 @@
 import { IConfigurationExtend, IHttp, ILogger, IModify, IPersistence, IRead } from '@rocket.chat/apps-engine/definition/accessors';
 import { App } from '@rocket.chat/apps-engine/definition/App';
-import { BlockitResponseType, IBlockitActionHandler, IBlockitBlockAction, IBlockitResponse } from '@rocket.chat/apps-engine/definition/blockit';
+import { BlockitResponseType, IBlockitAction, IBlockitActionHandler, IBlockitBlockAction, IBlockitResponse, IBlockitViewSubmit } from '@rocket.chat/apps-engine/definition/blockit';
 import { BlockElementType, BlockType, IActionsBlock, IButtonElement, TextObjectType } from '@rocket.chat/apps-engine/definition/blocks';
 import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
 
@@ -14,10 +14,16 @@ export class PollApp extends App implements IBlockitActionHandler {
         super(info, logger);
     }
 
-    // public async executeViewSubmitHandler(data: IBlockitAction, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
-    // }
+    public async executeViewSubmitHandler(data: IBlockitViewSubmit, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
 
-    public async executeBlockActionHandler(data: IBlockitBlockAction, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
+        console.log('data ->', data);
+
+        return {
+            success: true,
+        };
+    }
+
+    public async executeBlockActionHandler(data: IBlockitAction, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
         if (data.actionId === 'create') {
             const questions = [] as any;
             for (let i = 0; i < 5; i++) {
@@ -69,29 +75,6 @@ export class PollApp extends App implements IBlockitActionHandler {
                         },
                     },
                     ...questions,
-                    // {
-                    //     type: BlockType.IMAGE,
-                    //     title: {
-                    //         type: TextObjectType.PLAINTEXT,
-                    //         text: 'Example Image',
-                    //         emoji: true,
-                    //     },
-                    //     imageUrl: 'https://api.slack.com/img/blocks/bkb_template_images/goldengate.png',
-                    //     altText: 'Example Image',
-                    // },
-                    // {
-                    //     type: BlockType.ACTIONS,
-                    //     elements: [
-                    //         {
-                    //             type: BlockElementType.BUTTON,
-                    //             text: {
-                    //                 type: TextObjectType.PLAINTEXT,
-                    //                 text: 'OK',
-                    //                 emoji: true,
-                    //             },
-                    //         } as IButtonElement,
-                    //     ],
-                    // } as IActionsBlock,
                 ],
             };
         }
