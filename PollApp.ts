@@ -18,6 +18,8 @@ export class PollApp extends App implements IBlockitActionHandler {
 
         console.log('data ->', data);
 
+
+
         return {
             success: true,
         };
@@ -30,6 +32,7 @@ export class PollApp extends App implements IBlockitActionHandler {
                 questions.push({
                     type: 'input',
                     blockId: 'poll',
+                    "optional": true,
                     element: {
                         type: 'plain_text_input',
                         actionId: `option-${ i }`,
@@ -61,18 +64,25 @@ export class PollApp extends App implements IBlockitActionHandler {
                 },
                 blocks: [
                     {
-                        type: 'input',
-                        blockId: 'poll',
-                        element: {
-                            type: 'plain_text_input',
-                            actionId: 'question',
-                            initialValue: 'Your question',
+                        "type": "input",
+                        "element": {
+                            "type": "plain_text_input"
                         },
-                        label: {
-                            type: 'plain_text',
-                            text: 'Question',
-                            emoji: true,
-                        },
+                        "blockId": 'poll',
+                        "label": {
+                            "type": "plain_text",
+                            "text": "Insert your question",
+                            "emoji": true
+                        }
+                    },
+                    {
+                        "type": "divider"
+                    }, {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "*Add some choices*"
+                        }
                     },
                     ...questions,
                 ],
