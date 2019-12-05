@@ -18,6 +18,8 @@ export class PollCommand implements ISlashCommand {
 
     public async executor(context: SlashCommandContext, read: IRead, modify: IModify, http: IHttp, persis: IPersistence): Promise<void> {
 
+        const room = context.getRoom();
+
         const builder = modify.getCreator().startMessage()
             .setSender(context.getSender())
             .setRoom(context.getRoom())
@@ -42,7 +44,7 @@ export class PollCommand implements ISlashCommand {
                         text: 'Create poll',
                     },
                     actionId: 'create',
-                    value: 'create',
+                    value: room.id,
                 } as IButtonElement,
                 // {
                 //     type: BlockElementType.BUTTON,
