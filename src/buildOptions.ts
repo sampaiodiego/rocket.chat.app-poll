@@ -29,6 +29,22 @@ function addVoters(votes: IVoter, totalVotes: IPoll['totalVotes']) {
     return voters;
 }
 
+export function buildVoters(votes: IVoter, totalVotes: IPoll['totalVotes']) {
+    if (!votes) {
+        return '';
+    }
+
+    if (votes.quantity === 0) {
+        return '';
+    }
+
+    // const percentage = votes.quantity > 0 ? votes.quantity / totalVotes * 100 : 0;
+    // let voters = ` \`${ votes.quantity } (${ percentage.toFixed(2) }%)\``;
+    const votesStr = votes.quantity === 1 ? 'vote' : 'votes';
+
+    return `${ votes.quantity } ${ votesStr } - ${ votes.voters.length > 0 ? '@' : '' }${ votes.voters.join('@') }`;
+}
+
 export function buildOptions(options: Array<any>, poll: IPoll) {
     return {
         color: '#73a7ce',

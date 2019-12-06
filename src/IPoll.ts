@@ -3,7 +3,8 @@ export interface IVoter {
     voters: Array<string>;
 }
 export interface IPoll {
-    messageId: string;
+    msgId: string;
+    question: string;
     options: Array<string>;
     totalVotes: number;
     votes: Array<IVoter>;

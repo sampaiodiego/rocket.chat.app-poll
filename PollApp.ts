@@ -1,19 +1,34 @@
-import { IConfigurationExtend, IHttp, ILogger, IModify, IPersistence, IRead } from '@rocket.chat/apps-engine/definition/accessors';
+import {
+    IConfigurationExtend,
+    IHttp,
+    ILogger,
+    IModify,
+    IPersistence,
+    IRead,
+} from '@rocket.chat/apps-engine/definition/accessors';
 import { App } from '@rocket.chat/apps-engine/definition/App';
-import { MessageActionType } from '@rocket.chat/apps-engine/definition/messages/MessageActionType';
-import { BlockitResponseType, IBlockitAction, IBlockitActionHandler, IBlockitBlockAction, IBlockitResponse, IBlockitViewSubmit } from '@rocket.chat/apps-engine/definition/blockit';
-import { BlockElementType, BlockType, IActionsBlock, IButtonElement, TextObjectType } from '@rocket.chat/apps-engine/definition/blocks';
+import {
+    BlockitResponseType,
+    IBlockitActionHandler,
+    IBlockitBlockAction,
+    IBlockitViewSubmit,
+} from '@rocket.chat/apps-engine/definition/blockit';
+import { TextObjectType } from '@rocket.chat/apps-engine/definition/blocks';
+import {
+    IAppInfo,
+    RocketChatAssociationModel,
+    RocketChatAssociationRecord,
+} from '@rocket.chat/apps-engine/definition/metadata';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
-import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
-import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
+
+import { createPollMessage } from './src/createPollMessage';
+import { getPoll } from './src/getPoll';
+import { IPoll } from './src/IPoll';
+import { PollCommand } from './src/PollCommand';
+import { storeVote } from './src/storeVote';
+import { VoteCommand } from './src/VoteCommand';
 
 // Commands
-import { PollCommand } from './src/PollCommand';
-import { VoteCommand } from './src/VoteCommand';
-import { IPoll } from './src/IPoll';
-import { MessageActionButtonsAlignment } from '@rocket.chat/apps-engine/definition/messages/MessageActionButtonsAlignment';
-import { buildOptions } from './src/buildOptions';
-
 export function uuid(): string {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
         const r = Math.random() * 16 | 0;
@@ -56,35 +71,29 @@ export class PollApp extends App implements IBlockitActionHandler {
             .setSender(data.user)
             .setRoom(context.room)
             .setAvatarUrl('https://user-images.githubusercontent.com/8591547/44113440-751b9ff8-9fde-11e8-9e8c-8a555e6e382b.png')
-            .setText(`_${state.poll.question}_`)
+            // .setText(`_${state.poll.question}_`)
             .setUsernameAlias('Poll');
 
         try {
-            const UUID = uuid();
-
             const poll: IPoll = {
-                messageId: '',
+                question: state.poll.question,
+                msgId: '',
                 options,
                 totalVotes: 0,
                 votes: options.map(() => ({ quantity: 0, voters: [] })),
             };
 
-            builder.addAttachment(buildOptions(options, poll));
+            const block = modify.getCreator().getBlockBuilder();
 
-            builder.addAttachment({
-                color: '#73a7ce',
-                actionButtonsAlignment: MessageActionButtonsAlignment.HORIZONTAL,
-                actions: options.map((option: string, index: number) => ({
-                    type: MessageActionType.BUTTON,
-                    text: `${index + 1}`,
-                    msg_in_chat_window: true,
-                    msg: `/vote ${UUID} ${index}`,
-                })),
-            });
+            createPollMessage(block, poll.question, options, poll);
 
-            poll.messageId = await modify.getCreator().finish(builder);
+            builder.setBlocks(block);
 
-            const pollAssociation = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, UUID);
+            const messageId = await modify.getCreator().finish(builder);
+
+            poll.msgId = messageId;
+
+            const pollAssociation = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, messageId);
             await persistence.createWithAssociation(poll, pollAssociation);
         } catch (e) {
 
@@ -100,75 +109,106 @@ export class PollApp extends App implements IBlockitActionHandler {
 
     public async executeBlockActionHandler(data: IBlockitBlockAction, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
         // console.log('executeBlockActionHandler ->', data);
-        if (data.actionId === 'create') {
-            const viewId = uuid();
+        switch (data.actionId) {
+            case 'vote': {
+                if (!data.message) {
+                    return {
+                        success: true,
+                    };
+                }
+                const poll = await getPoll(String(data.message.id), read);
+                if (!poll) {
+                    throw new Error('no such poll');
+                }
 
-            const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, viewId);
-            await persistence.createWithAssociation({ room: data.room }, association);
+                await storeVote(poll, parseInt(String(data.value), 10), data.user, { persis: persistence });
 
-            const questions = [] as any;
-            for (let i = 0; i < 5; i++) {
-                questions.push({
-                    type: 'input',
-                    blockId: 'poll',
-                    optional: true,
-                    element: {
-                        type: 'plain_text_input',
-                        actionId: `option-${ i }`,
-                        initialValue: 'Some option',
-                    },
-                    label: {
-                        type: 'plain_text',
-                        text: `Option (${ i + 1 })`,
-                        emoji: true,
-                    },
-                });
+                const message = await modify.getUpdater().message(data.message.id as string, data.user);
+                message.setEditor(message.getSender());
+
+                const block = modify.getCreator().getBlockBuilder();
+
+                createPollMessage(block, poll.question, poll.options, poll);
+
+                message.setBlocks(block);
+
+                await modify.getUpdater().finish(message);
+
+                return {
+                    success: true,
+                };
             }
 
-            return {
-                success: true,
-                triggerId: data.triggerId,
-                type: BlockitResponseType.MODAL, // modal, home
-                notifyOnClose: true,
-                viewId,
-                title: {
-                    type: TextObjectType.PLAINTEXT,
-                    text: 'Create a poll',
-                },
-                submit: {
-                    type: TextObjectType.PLAINTEXT,
-                    text: 'Create',
-                },
-                close: {
-                    type: TextObjectType.PLAINTEXT,
-                    text: 'Dismiss',
-                },
-                blocks: [
-                    {
+            case 'create': {
+                const viewId = uuid();
+
+                const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, viewId);
+                await persistence.createWithAssociation({ room: data.room }, association);
+
+                const questions = [] as any;
+                for (let i = 0; i < 5; i++) {
+                    questions.push({
                         type: 'input',
+                        blockId: 'poll',
+                        optional: true,
                         element: {
                             type: 'plain_text_input',
-                            actionId: 'question',
+                            actionId: `option-${ i }`,
+                            initialValue: 'Some option',
                         },
-                        blockId: 'poll',
                         label: {
                             type: 'plain_text',
-                            text: 'Insert your question',
+                            text: `Option (${ i + 1 })`,
                             emoji: true,
                         },
+                    });
+                }
+
+                return {
+                    success: true,
+                    triggerId: data.triggerId,
+                    type: BlockitResponseType.MODAL, // modal, home
+                    notifyOnClose: true,
+                    viewId,
+                    title: {
+                        type: TextObjectType.PLAINTEXT,
+                        text: 'Create a poll',
                     },
-                    {
-                        type: 'divider',
-                    }, {
-                        type: 'section',
-                        text: {
-                            type: 'mrkdwn',
-                            text: '*Add some choices*',
+                    submit: {
+                        type: TextObjectType.PLAINTEXT,
+                        text: 'Create',
+                    },
+                    close: {
+                        type: TextObjectType.PLAINTEXT,
+                        text: 'Dismiss',
+                    },
+                    blocks: [
+                        {
+                            type: 'input',
+                            element: {
+                                type: 'plain_text_input',
+                                actionId: 'question',
+                            },
+                            blockId: 'poll',
+                            label: {
+                                type: 'plain_text',
+                                text: 'Insert your question',
+                                emoji: true,
+                            },
                         },
-                    },
-                    ...questions,
-                ],
-            };
+                        {
+                            type: 'divider',
+                        }, {
+                            type: 'section',
+                            text: {
+                                type: 'mrkdwn',
+                                text: '*Add some choices*',
+                            },
+                        },
+                        ...questions,
+                    ],
+                };
+            }
         }
 
         return {

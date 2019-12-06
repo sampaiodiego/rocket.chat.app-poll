@@ -1,7 +1,7 @@
 import { IHttp, IModify, IPersistence, IRead } from '@rocket.chat/apps-engine/definition/accessors';
-import { BlockitResponseType, IBlockitAction, IBlockitActionHandler, IBlockitResponse } from '@rocket.chat/apps-engine/definition/blockit';
 import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
 import { ISlashCommand, SlashCommandContext } from '@rocket.chat/apps-engine/definition/slashcommands';
+
 import { PollApp } from '../PollApp';
 import { buildOptions } from './buildOptions';
 import { IPoll } from './IPoll';
@@ -27,13 +27,13 @@ export class VoteCommand implements ISlashCommand {
 
         const pollID = args.shift();
         const voteIndex = Number(args.shift());
-        const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, pollID!);
 
         if (isNaN(voteIndex)) {
             console.log('Invalid index', voteIndex);
             throw new Error('Invalid index');
         }
 
+        const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, pollID!);
         const polls = await read.getPersistenceReader().readByAssociation(association);
 
         if (!polls || polls.length < 1) {
@@ -58,7 +58,7 @@ export class VoteCommand implements ISlashCommand {
         }
         await persis.updateByAssociation(association, poll);
 
-        const message = await modify.getUpdater().message(poll.messageId, context.getSender());
+        const message = await modify.getUpdater().message(poll.msgId, context.getSender());
         message.setEditor(message.getSender());
 
         const attachments = message.getAttachments();

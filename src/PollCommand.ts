@@ -1,11 +1,6 @@
 import { IHttp, IModify, IPersistence, IRead } from '@rocket.chat/apps-engine/definition/accessors';
-import { MessageActionButtonsAlignment } from '@rocket.chat/apps-engine/definition/messages/MessageActionButtonsAlignment';
-import { MessageActionType } from '@rocket.chat/apps-engine/definition/messages/MessageActionType';
-import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
+import { BlockElementType, IButtonElement, TextObjectType } from '@rocket.chat/apps-engine/definition/blocks';
 import { ISlashCommand, SlashCommandContext } from '@rocket.chat/apps-engine/definition/slashcommands';
-import { buildOptions } from './buildOptions';
-import { IPoll } from './IPoll';
-import { TextObjectType, BlockElementType, IButtonElement } from '@rocket.chat/apps-engine/definition/blocks';
 
 const clearQuotes = (item) => item.replace(/(^['"]|['"]$)/g, '');
 
@@ -28,6 +23,7 @@ export class PollCommand implements ISlashCommand {
             .setUsernameAlias('Poll');
 
         const block = modify.getCreator().getBlockBuilder();
+
         block.addSectionBlock({
             text: {
                 type: TextObjectType.PLAINTEXT,
