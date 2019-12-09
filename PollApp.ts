@@ -3,9 +3,9 @@ import { App } from '@rocket.chat/apps-engine/definition/App';
 import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
 
 // Commands
+import { SettingType } from '@rocket.chat/apps-engine/definition/settings';
 import { PollCommand } from './src/PollCommand';
 import { VoteCommand } from './src/VoteCommand';
-import { SettingType } from '@rocket.chat/apps-engine/definition/settings';
 
 export class PollApp extends App {
 
@@ -17,13 +17,13 @@ export class PollApp extends App {
         await configuration.slashCommands.provideSlashCommand(new PollCommand());
         await configuration.slashCommands.provideSlashCommand(new VoteCommand(this));
         await configuration.settings.provideSetting({
-            id : "use-user-name",
-            i18nLabel: "Use name attribute to display voters, instead of username",
-            i18nDescription: "when checked, display voters as full user names instead of @name",
+            id : 'use-user-name',
+            i18nLabel: 'Use name attribute to display voters, instead of username',
+            i18nDescription: 'When checked, display voters as full user names instead of @name',
             required: false,
             type: SettingType.BOOLEAN,
             public: true,
-            packageValue: false
+            packageValue: false,
         });
     }
 

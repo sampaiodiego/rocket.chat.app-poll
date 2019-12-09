@@ -42,9 +42,9 @@ export class VoteCommand implements ISlashCommand {
 
         const poll = polls[0] as IPoll;
 
-        const useUserName = await read.getEnvironmentReader().getSettings().getById("use-user-name");
+        const useUserName = await read.getEnvironmentReader().getSettings().getById('use-user-name');
 
-        const displayedName = useUserName.value ? context.getSender().name : "@"+context.getSender().username;
+        const displayedName = useUserName.value ? context.getSender().name : '@' + context.getSender().username;
 
         const hasVoted = poll.votes[voteIndex].voters.indexOf(displayedName);
 
