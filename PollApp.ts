@@ -164,7 +164,7 @@ export class PollApp extends App implements IBlockitActionHandler {
                     });
                 }
 
-                return {
+                const modal = {
                     success: true,
                     triggerId: data.triggerId,
                     type: BlockitResponseType.MODAL, // modal, home
@@ -207,6 +207,12 @@ export class PollApp extends App implements IBlockitActionHandler {
                         },
                         ...questions,
                     ],
+                };
+
+                modify.getNotifier().sendUiInteration(data.user, modal);
+
+                return {
+                    success: true,
                 };
             }
         }
