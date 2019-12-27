@@ -1,6 +1,6 @@
 {
     "devDependencies": {
-        "@rocket.chat/apps-engine": "file:../Rocket.Chat.Apps-engine",
+        "@rocket.chat/apps-engine": "1.11.0-blockitchat.2345",
         "tslint": "^5.10.0",
         "typescript": "^2.9.1"
     },

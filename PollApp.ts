@@ -8,18 +8,17 @@ import {
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { App } from '@rocket.chat/apps-engine/definition/App';
 import {
-    BlockitResponseType,
-    IBlockitActionHandler,
-    IBlockitBlockAction,
-    IBlockitViewSubmit,
-} from '@rocket.chat/apps-engine/definition/blockit';
-import { TextObjectType } from '@rocket.chat/apps-engine/definition/blocks';
-import {
     IAppInfo,
     RocketChatAssociationModel,
     RocketChatAssociationRecord,
 } from '@rocket.chat/apps-engine/definition/metadata';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
+import {
+    IUIKitInteractionHandler,
+    UIKitBlockInteractionContext,
+    UIKitViewSubmitInteractionContext,
+} from '@rocket.chat/apps-engine/definition/uikit';
+import { TextObjectType } from '@rocket.chat/apps-engine/definition/uikit/blocks';
 
 import { createPollMessage } from './src/createPollMessage';
 import { getPoll } from './src/getPoll';
@@ -37,14 +36,16 @@ export function uuid(): string {
     });
 }
 
-export class PollApp extends App implements IBlockitActionHandler {
+export class PollApp extends App implements IUIKitInteractionHandler {
 
     constructor(info: IAppInfo, logger: ILogger) {
         super(info, logger);
     }
 
-    public async executeViewSubmitHandler(data: IBlockitViewSubmit, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
+    public async executeViewSubmitHandler(context: UIKitViewSubmitInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
         // console.log('executeViewSubmitHandler ->', data);
+
+        const data = context.getInteractionData();
 
         const {
             triggerId,
@@ -59,7 +60,7 @@ export class PollApp extends App implements IBlockitActionHandler {
 
         // console.log('poll ->', value);
         const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, id);
-        const [context] = await read.getPersistenceReader().readByAssociation(association) as Array<{ room: IRoom }>;
+        const [record] = await read.getPersistenceReader().readByAssociation(association) as Array<{ room: IRoom }>;
 
         const options = Object.entries<any>(state.poll)
             .filter(([key]) => key !== 'question')
@@ -69,7 +70,7 @@ export class PollApp extends App implements IBlockitActionHandler {
 
         const builder = modify.getCreator().startMessage()
             .setSender(data.user)
-            .setRoom(context.room)
+            .setRoom(record.room)
             .setAvatarUrl('https://user-images.githubusercontent.com/8591547/44113440-751b9ff8-9fde-11e8-9e8c-8a555e6e382b.png')
             // .setText(`_${state.poll.question}_`)
             .setUsernameAlias('Poll');
@@ -107,7 +108,10 @@ export class PollApp extends App implements IBlockitActionHandler {
         };
     }
 
-    public async executeBlockActionHandler(data: IBlockitBlockAction, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
+    public async executeBlockActionHandler(context: UIKitBlockInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
+
+        const data = context.getInteractionData();
+
         // console.log('executeBlockActionHandler ->', data);
         switch (data.actionId) {
             case 'vote': {
@@ -145,75 +149,123 @@ export class PollApp extends App implements IBlockitActionHandler {
                 const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, viewId);
                 await persistence.createWithAssociation({ room: data.room }, association);
 
-                const questions = [] as any;
+                // const questions = [] as any;
+                // for (let i = 0; i < 5; i++) {
+                //     questions.push({
+                //         type: 'input',
+                //         blockId: 'poll',
+                //         optional: true,
+                //         element: {
+                //             type: 'plain_text_input',
+                //             actionId: `option-${ i }`,
+                //             initialValue: 'Some option',
+                //         },
+                //         label: {
+                //             type: 'plain_text',
+                //             text: `Option (${ i + 1 })`,
+                //             emoji: true,
+                //         },
+                //     });
+                // }
+
+                const block = modify.getCreator().getBlockBuilder();
+                block.addInputBlock({
+                    blockId: 'poll',
+                    element: block.newPlainTextInputElement({ actionId: 'question' }),
+                    label: {
+                        type: TextObjectType.PLAINTEXT,
+                        text: 'Insert your question',
+                        emoji: true,
+                    },
+                })
+                .addDividerBlock()
+                .addSectionBlock({
+                    text: {
+                        type: TextObjectType.MARKDOWN,
+                        text: '*Add some choices',
+                    },
+                });
+
                 for (let i = 0; i < 5; i++) {
-                    questions.push({
-                        type: 'input',
+                    block.addInputBlock({
                         blockId: 'poll',
                         optional: true,
-                        element: {
-                            type: 'plain_text_input',
+                        element: block.newPlainTextInputElement({
                             actionId: `option-${ i }`,
                             initialValue: 'Some option',
-                        },
+                        }),
                         label: {
-                            type: 'plain_text',
+                            type: TextObjectType.PLAINTEXT,
                             text: `Option (${ i + 1 })`,
                             emoji: true,
                         },
                     });
                 }
 
-                const modal = {
-                    success: true,
-                    triggerId: data.triggerId,
-                    type: BlockitResponseType.MODAL, // modal, home
-                    notifyOnClose: true,
-                    viewId,
+                return context.modalViewResponse({
                     title: {
                         type: TextObjectType.PLAINTEXT,
                         text: 'Create a poll',
                     },
-                    submit: {
-                        type: TextObjectType.PLAINTEXT,
-                        text: 'Create',
-                    },
-                    close: {
-                        type: TextObjectType.PLAINTEXT,
-                        text: 'Dismiss',
-                    },
-                    blocks: [
-                        {
-                            type: 'input',
-                            element: {
-                                type: 'plain_text_input',
-                                actionId: 'question',
-                            },
-                            blockId: 'poll',
-                            label: {
-                                type: 'plain_text',
-                                text: 'Insert your question',
-                                emoji: true,
-                            },
+                    submit: block.newButtonElement({
+                        text: {
+                            type: TextObjectType.PLAINTEXT,
+                            text: 'Create',
                         },
-                        {
-                            type: 'divider',
-                        }, {
-                            type: 'section',
-                            text: {
-                                type: 'mrkdwn',
-                                text: '*Add some choices*',
-                            },
+                    }),
+                    close: block.newButtonElement({
+                        text: {
+                            type: TextObjectType.PLAINTEXT,
+                            text: 'Dismiss',
                         },
-                        ...questions,
-                    ],
-                };
+                    }),
+                    blocks: block.getBlocks(),
+                });
 
-                modify.getNotifier().sendUiInteration(data.user, modal);
-
-                return {
-                    success: true,
-                };
+                // return {
+                //     success: true,
+                //     triggerId: data.triggerId,
+                //     type: BlockitResponseType.MODAL, // modal, home
+                //     notifyOnClose: true,
+                //     viewId,
+                //     title: {
+                //         type: TextObjectType.PLAINTEXT,
+                //         text: 'Create a poll',
+                //     },
+                //     submit: {
+                //         type: TextObjectType.PLAINTEXT,
+                //         text: 'Create',
+                //     },
+                //     close: {
+                //         type: TextObjectType.PLAINTEXT,
+                //         text: 'Dismiss',
+                //     },
+                //     blocks: [
+                //         {
+                //             type: 'input',
+                //             element: {
+                //                 type: 'plain_text_input',
+                //                 actionId: 'question',
+                //             },
+                //             blockId: 'poll',
+                //             label: {
+                //                 type: 'plain_text',
+                //                 text: 'Insert your question',
+                //                 emoji: true,
+                //             },
+                //         },
+                //         {
+                //             type: 'divider',
+                //         }, {
+                //             type: 'section',
+                //             text: {
+                //                 type: 'mrkdwn',
+                //                 text: '*Add some choices*',
+                //             },
+                //         },
+                //         ...questions,
+                //     ],
+                // };
             }
         }
 

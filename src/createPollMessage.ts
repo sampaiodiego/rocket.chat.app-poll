@@ -1,4 +1,4 @@
-import { BlockBuilder, BlockElementType, TextObjectType } from '@rocket.chat/apps-engine/definition/blocks';
+import { BlockBuilder, BlockElementType, TextObjectType } from '@rocket.chat/apps-engine/definition/uikit';
 
 import { buildVoters } from './buildOptions';
 import { IPoll } from './IPoll';

@@ -1,6 +1,6 @@
 import { IHttp, IModify, IPersistence, IRead } from '@rocket.chat/apps-engine/definition/accessors';
-import { BlockElementType, IButtonElement, TextObjectType } from '@rocket.chat/apps-engine/definition/blocks';
 import { ISlashCommand, SlashCommandContext } from '@rocket.chat/apps-engine/definition/slashcommands';
+import { BlockElementType, IButtonElement, TextObjectType } from '@rocket.chat/apps-engine/definition/uikit';
 
 const clearQuotes = (item) => item.replace(/(^['"]|['"]$)/g, '');
 
