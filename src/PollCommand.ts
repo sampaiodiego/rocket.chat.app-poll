@@ -57,57 +57,6 @@ export class PollCommand implements ISlashCommand {
         builder.setBlocks(block);
 
         modify.getNotifier().notifyUser(context.getSender(), builder.getMessage());
-
-        // const params = context.getArguments().join(' ');
-        // const match = params.match(/((["'])(?:(?=(\\?))\3.)*?\2)/g);
-
-        // if (!match) {
-        //     throw new Error('Invalid params');
-        // }
-
-        // const options = match.map(clearQuotes);
-        // const question = options.shift();
-
-        // const builder = modify.getCreator().startMessage()
-        //     .setSender(context.getSender())
-        //     .setRoom(context.getRoom())
-        //     .setAvatarUrl('https://user-images.githubusercontent.com/8591547/44113440-751b9ff8-9fde-11e8-9e8c-8a555e6e382b.png')
-        //     .setText(`_${question}_`)
-        //     .setUsernameAlias('Poll');
-
-        // try {
-        //     const UUID = this.UUID();
-
-        //     const poll: IPoll = {
-        //         messageId: '',
-        //         options,
-        //         totalVotes: 0,
-        //         votes: options.map(() => ({ quantity: 0, voters: [] })),
-        //     };
-
-        //     builder.addAttachment(buildOptions(options, poll));
-
-        //     builder.addAttachment({
-        //         color: '#73a7ce',
-        //         actionButtonsAlignment: MessageActionButtonsAlignment.HORIZONTAL,
-        //         actions: options.map((option: string, index: number) => ({
-        //             type: MessageActionType.BUTTON,
-        //             text: `${index + 1}`,
-        //             msg_in_chat_window: true,
-        //             msg: `/vote ${UUID} ${index}`,
-        //         })),
-        //     });
-
-        //     poll.messageId = await modify.getCreator().finish(builder);
-
-        //     const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, UUID);
-        //     await persis.createWithAssociation(poll, association);
-        // } catch (e) {
-
-        //     builder.setText('An error occured when trying to send the gif :disappointed_relieved:');
-
-        //     modify.getNotifier().notifyUser(context.getSender(), builder.getMessage());
-        // }
     }
 
     private UUID() {

@@ -1,9 +1,9 @@
 import { BlockBuilder, BlockElementType, TextObjectType } from '@rocket.chat/apps-engine/definition/uikit';
 
-import { buildVoters } from './buildOptions';
-import { IPoll } from './IPoll';
+import { buildVoters } from '../buildOptions';
+import { IPoll } from '../IPoll';
 
-export function createPollMessage(block: BlockBuilder, question: string, options: Array<any>, poll: IPoll) {
+export function createPollBlocks(block: BlockBuilder, question: string, options: Array<any>, poll: IPoll) {
     block.addSectionBlock({
         text: {
             type: TextObjectType.PLAINTEXT,
