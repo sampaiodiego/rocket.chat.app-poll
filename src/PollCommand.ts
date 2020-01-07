@@ -8,6 +8,8 @@ import { IPoll } from './IPoll';
 
 const clearQuotes = (item) => item.replace(/(^['"]|['"]$)/g, '');
 
+const avatarURL = 'https://user-images.githubusercontent.com/8591547/44113440-751b9ff8-9fde-11e8-9e8c-8a555e6e382b.png';
+
 export class PollCommand implements ISlashCommand {
 
     public command = 'poll';
@@ -30,7 +32,7 @@ export class PollCommand implements ISlashCommand {
         const builder = modify.getCreator().startMessage()
             .setSender(context.getSender())
             .setRoom(context.getRoom())
-            .setAvatarUrl('https://user-images.githubusercontent.com/8591547/44113440-751b9ff8-9fde-11e8-9e8c-8a555e6e382b.png')
+            .setAvatarUrl(avatarURL)
             .setText(`_${question}_`)
             .setUsernameAlias('Poll');
 
@@ -62,8 +64,18 @@ export class PollCommand implements ISlashCommand {
             const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, UUID);
             await persis.createWithAssociation(poll, association);
         } catch (e) {
+            const errorText = `An error occured when trying to create the poll :disappointed_relieved:
 
-            builder.setText('An error occured when trying to send the gif :disappointed_relieved:');
+Command executed:
+\`\`\`
+/poll ${ params }
+\`\`\``;
+            const builder = modify.getCreator().startMessage()
+                .setSender(context.getSender())
+                .setRoom(context.getRoom())
+                .setAvatarUrl(avatarURL)
+                .setText(errorText)
+                .setUsernameAlias('Poll');
 
             modify.getNotifier().notifyUser(context.getSender(), builder.getMessage());
         }
