@@ -42,7 +42,7 @@ export function buildVoters(votes: IVoter, totalVotes: IPoll['totalVotes']) {
     // let voters = ` \`${ votes.quantity } (${ percentage.toFixed(2) }%)\``;
     const votesStr = votes.quantity === 1 ? 'vote' : 'votes';
 
-    return `${ votes.quantity } ${ votesStr } - ${ votes.voters.length > 0 ? '@' : '' }${ votes.voters.join(' ') }`;
+    return `${ votes.quantity } ${ votesStr } - ${ votes.voters.join(' ') }`;
 }
 
 export function buildOptions(options: Array<any>, poll: IPoll) {
