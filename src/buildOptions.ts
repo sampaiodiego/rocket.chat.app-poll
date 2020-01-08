@@ -23,7 +23,7 @@ function addVoters(votes: IVoter, totalVotes: IPoll['totalVotes']) {
     let voters = ` \`${ votes.quantity }\``;
 
     if (votes.voters.length > 0) {
-        voters += `\n_@${ votes.voters.join('_, _@') }_`;
+        voters += `\n_${ votes.voters.join('_, _') }_`;
     }
 
     return voters;

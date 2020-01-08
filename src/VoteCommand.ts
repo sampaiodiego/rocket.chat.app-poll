@@ -43,9 +43,11 @@ export class VoteCommand implements ISlashCommand {
 
         const poll = polls[0] as IPoll;
 
-        const { username } = context.getSender();
+        const useUserName = await read.getEnvironmentReader().getSettings().getById('use-user-name');
 
-        const hasVoted = poll.votes[voteIndex].voters.indexOf(username);
+        const displayedName = useUserName.value ? context.getSender().name : '@' + context.getSender().username;
+
+        const hasVoted = poll.votes[voteIndex].voters.indexOf(displayedName);
 
         if (hasVoted !== -1) {
             poll.totalVotes--;
@@ -54,7 +56,7 @@ export class VoteCommand implements ISlashCommand {
         } else {
             poll.totalVotes++;
             poll.votes[voteIndex].quantity++;
-            poll.votes[voteIndex].voters.push(username);
+            poll.votes[voteIndex].voters.push(displayedName);
         }
         await persis.updateByAssociation(association, poll);
 
