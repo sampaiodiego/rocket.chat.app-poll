@@ -8,6 +8,7 @@ import {
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { App } from '@rocket.chat/apps-engine/definition/App';
 import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
+import { SettingType } from '@rocket.chat/apps-engine/definition/settings';
 import {
     IUIKitInteractionHandler,
     UIKitBlockInteractionContext,
@@ -68,5 +69,15 @@ export class PollApp extends App implements IUIKitInteractionHandler {
     public async initialize(configuration: IConfigurationExtend): Promise<void> {
         await configuration.slashCommands.provideSlashCommand(new PollCommand());
         await configuration.slashCommands.provideSlashCommand(new VoteCommand(this));
+        await configuration.settings.provideSetting({
+            id : 'use-user-name',
+            i18nLabel: 'Use name attribute to display voters, instead of username',
+            i18nDescription: 'When checked, display voters as full user names instead of @name',
+            required: false,
+            type: SettingType.BOOLEAN,
+            public: true,
+            packageValue: false,
+        });
     }
+
 }

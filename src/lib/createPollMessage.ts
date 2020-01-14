@@ -62,5 +62,19 @@ export async function createPollMessage(data, read: IRead, modify: IModify, pers
         console.log('error ->', e);
         // builder.setText('An error occured when trying to send the gif :disappointed_relieved:');
         // modify.getNotifier().notifyUser(context.getSender(), builder.getMessage());
+
+//         const errorText = `An error occured when trying to create the poll :disappointed_relieved:
+
+// Command executed:
+// \`\`\`
+// /poll ${ params }
+// \`\`\``;
+//                     const builder = modify.getCreator().startMessage()
+//                         .setSender(context.getSender())
+//                         .setRoom(context.getRoom())
+//                         .setAvatarUrl(avatarURL)
+//                         .setText(errorText)
+//                         .setUsernameAlias('Poll');
+
     }
 }
