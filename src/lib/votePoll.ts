@@ -28,9 +28,14 @@ export async function votePoll({ data, read, persistence, modify }: {
 
     const block = modify.getCreator().getBlockBuilder();
 
-    createPollBlocks(block, poll.question, poll.options, poll);
+    try {
 
-    message.setBlocks(block);
+        createPollBlocks(block, poll.question, poll.options, poll);
 
-    return modify.getUpdater().finish(message);
+        message.setBlocks(block);
+
+        return modify.getUpdater().finish(message);
+    } catch (e) {
+        console.error('Error', e);
+    }
 }

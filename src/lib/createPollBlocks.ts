@@ -2,6 +2,7 @@ import { BlockBuilder, BlockElementType, TextObjectType } from '@rocket.chat/app
 
 import { buildVoters } from '../buildOptions';
 import { IPoll } from '../IPoll';
+import { buildVoteGraph } from './buildVoteGraph';
 
 export function createPollBlocks(block: BlockBuilder, question: string, options: Array<any>, poll: IPoll) {
     block.addSectionBlock({
@@ -31,6 +32,17 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
             return;
         }
         const voters = buildVoters(poll.votes[index], poll.totalVotes);
+
+        const graph = buildVoteGraph(poll.votes[index], poll.totalVotes);
+        block.addContextBlock({
+            elements: [
+                {
+                    type: TextObjectType.MARKDOWN,
+                    text: graph,
+                },
+            ],
+        });
+
         // addVoters(poll.votes[index], poll.totalVotes)
         if (!voters) {
             return;
