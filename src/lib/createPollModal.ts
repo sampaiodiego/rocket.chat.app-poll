@@ -1,8 +1,7 @@
 import { IModify, IPersistence } from '@rocket.chat/apps-engine/definition/accessors';
 import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
-import { IUIKitModalViewParam } from '@rocket.chat/apps-engine/definition/uikit';
 import { TextObjectType } from '@rocket.chat/apps-engine/definition/uikit/blocks';
-
+import { IUIKitModalViewParam } from '@rocket.chat/apps-engine/definition/uikit/UIKitInteractionResponder';
 import { uuid } from './uuid';
 
 export async function createPollModal({ persistence, data, modify }: {

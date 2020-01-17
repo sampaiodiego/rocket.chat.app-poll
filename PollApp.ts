@@ -56,7 +56,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
             case 'create': {
                 const modal = await createPollModal({ data, persistence, modify });
 
-                return context.modalViewResponse(modal);
+                return context.getInteractionResponder().openModalViewResponse(modal);
             }
         }
 
