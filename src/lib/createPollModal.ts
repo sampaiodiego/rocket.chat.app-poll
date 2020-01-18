@@ -4,7 +4,8 @@ import { TextObjectType } from '@rocket.chat/apps-engine/definition/uikit/blocks
 import { IUIKitModalViewParam } from '@rocket.chat/apps-engine/definition/uikit/UIKitInteractionResponder';
 import { uuid } from './uuid';
 
-export async function createPollModal({ persistence, data, modify }: {
+export async function createPollModal({ question, persistence, data, modify }: {
+    question?: string,
     persistence: IPersistence,
     data,
     modify: IModify,
@@ -35,7 +36,7 @@ export async function createPollModal({ persistence, data, modify }: {
     const block = modify.getCreator().getBlockBuilder();
     block.addInputBlock({
         blockId: 'poll',
-        element: block.newPlainTextInputElement({ actionId: 'question' }),
+        element: block.newPlainTextInputElement({ initialValue: question, actionId: 'question' }),
         label: {
             type: TextObjectType.PLAINTEXT,
             text: 'Insert your question',

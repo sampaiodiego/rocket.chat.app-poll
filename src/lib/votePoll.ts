@@ -21,6 +21,10 @@ export async function votePoll({ data, read, persistence, modify }: {
         throw new Error('no such poll');
     }
 
+    if(poll.finished) {
+        throw new Error('poll is already finished');
+    }
+
     await storeVote(poll, parseInt(String(data.value), 10), data.user, { persis: persistence });
 
     const message = await modify.getUpdater().message(data.message.id as string, data.user);
@@ -28,14 +32,10 @@ export async function votePoll({ data, read, persistence, modify }: {
 
     const block = modify.getCreator().getBlockBuilder();
 
-    try {
 
-        createPollBlocks(block, poll.question, poll.options, poll);
+    createPollBlocks(block, poll.question, poll.options, poll);
 
-        message.setBlocks(block);
+    message.setBlocks(block);
 
-        return modify.getUpdater().finish(message);
-    } catch (e) {
-        console.error('Error', e);
-    }
+    return modify.getUpdater().finish(message);
 }

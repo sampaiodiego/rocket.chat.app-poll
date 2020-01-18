@@ -8,4 +8,5 @@ export interface IPoll {
     options: Array<string>;
     totalVotes: number;
     votes: Array<IVoter>;
+    finished?: Boolean;
 }

@@ -16,6 +16,7 @@ import {
 } from '@rocket.chat/apps-engine/definition/uikit';
 
 import { createPollMessage } from './src/lib/createPollMessage';
+import { finishPollMessage } from './src/lib/finishPollMessage';
 import { createPollModal } from './src/lib/createPollModal';
 import { votePoll } from './src/lib/votePoll';
 import { PollCommand } from './src/PollCommand';
@@ -57,6 +58,33 @@ export class PollApp extends App implements IUIKitInteractionHandler {
                 const modal = await createPollModal({ data, persistence, modify });
 
                 return context.getInteractionResponder().openModalViewResponse(modal);
+            }
+
+            case 'finish': {
+
+                try {
+                    await finishPollMessage({ data, read, persistence, modify })
+                } catch(e) {
+
+
+                    const { room } = context.getInteractionData();
+                     const errorMessage = modify
+                         .getCreator()
+                         .startMessage()
+                         .setSender(context.getInteractionData().user)
+                         .setText(e.message)
+                         .setUsernameAlias("Poll");
+
+                         if(room) {
+                            errorMessage.setRoom(room);
+                         }
+                     modify
+                         .getNotifier()
+                         .notifyUser(
+                             context.getInteractionData().user,
+                             errorMessage.getMessage()
+                         );
+                }
             }
         }
 
