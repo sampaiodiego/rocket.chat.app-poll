@@ -14,8 +14,10 @@ export class PollCommand implements ISlashCommand {
 
         console.log('app', context.getRoom());
 
+        const question = context.getArguments().join(" ");
+
         if (triggerId) {
-            const modal = await createPollModal({ persistence: persis, modify, data: { room: (context.getRoom() as any).value } });
+            const modal = await createPollModal({ question, persistence: persis, modify, data: { room: (context.getRoom() as any).value } });
 
             await modify.getUiController().openModalView(modal, { triggerId }, context.getSender());
         }

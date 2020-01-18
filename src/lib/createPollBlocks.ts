@@ -1,14 +1,23 @@
 import { BlockBuilder, BlockElementType, TextObjectType } from '@rocket.chat/apps-engine/definition/uikit';
 
 import { buildVoters } from '../buildOptions';
-import { IPoll } from '../IPoll';
 import { buildVoteGraph } from './buildVoteGraph';
+
+import { IPoll } from '../IPoll';
 
 export function createPollBlocks(block: BlockBuilder, question: string, options: Array<any>, poll: IPoll) {
     block.addSectionBlock({
         text: {
             type: TextObjectType.PLAINTEXT,
             text: question,
+        },
+        accessory: {
+            type: BlockElementType.BUTTON,
+            actionId: 'finish',
+            text: {
+                type: TextObjectType.PLAINTEXT,
+                text: 'Finish poll',
+            },
         },
     });
     block.addDividerBlock();
