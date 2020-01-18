@@ -57,7 +57,7 @@ export async function createPollModal({ question, persistence, data, modify }: {
             optional: true,
             element: block.newPlainTextInputElement({
                 actionId: `option-${i}`,
-                initialValue: 'Some option',
+                // initialValue: 'Some option',
             }),
             label: {
                 type: TextObjectType.PLAINTEXT,
