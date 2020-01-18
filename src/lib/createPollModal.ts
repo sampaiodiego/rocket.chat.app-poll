@@ -47,7 +47,7 @@ export async function createPollModal({ question, persistence, data, modify }: {
     .addSectionBlock({
         text: {
             type: TextObjectType.MARKDOWN,
-            text: '*Add some choices',
+            text: '*Add some choices*',
         },
     });
 
