@@ -1,11 +1,11 @@
 import { IModify, IPersistence, IRead } from '@rocket.chat/apps-engine/definition/accessors';
 import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
-
+import { IUIKitViewSubmitIncomingInteraction } from '@rocket.chat/apps-engine/definition/uikit/UIKitIncomingInteractionTypes';
 import { IPoll } from '../IPoll';
 import { createPollBlocks } from './createPollBlocks';
 
-export async function createPollMessage(data, read: IRead, modify: IModify, persistence: IPersistence) {
+export async function createPollMessage(data: IUIKitViewSubmitIncomingInteraction, read: IRead, modify: IModify, persistence: IPersistence) {
     // console.log('data ->', data);
 
     const { view: { id } } = data;
@@ -18,9 +18,27 @@ export async function createPollMessage(data, read: IRead, modify: IModify, pers
     const [record] = await read.getPersistenceReader().readByAssociation(association) as Array<{
         room: IRoom;
     }>;
-    const options = Object.entries<any>(state.poll)
+
+    if (!state.poll || !state.poll.question) {
+        throw { question: 'Please type your question here' };
+    }
+
+    const options = Object.entries<any>(state.poll || {})
         .filter(([key]) => key !== 'question')
         .map(([, question]) => question);
+
+    if (!options.length) {
+        throw {
+            'option-0': 'Please provide some options',
+            'option-1': 'Please provide some options',
+        };
+    }
+
+    if (options.length === 1) {
+        throw {
+            'option-1': 'Please provide one more option',
+        };
+    }
 
     // console.log('options ->', options);
     try {
@@ -59,7 +77,7 @@ export async function createPollMessage(data, read: IRead, modify: IModify, pers
         // console.log('save')
         await persistence.createWithAssociation(poll, pollAssociation);
     } catch (e) {
-        console.log('error ->', e);
+        throw e;
         // builder.setText('An error occured when trying to send the gif :disappointed_relieved:');
         // modify.getNotifier().notifyUser(context.getSender(), builder.getMessage());
 
