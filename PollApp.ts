@@ -16,8 +16,8 @@ import {
 } from '@rocket.chat/apps-engine/definition/uikit';
 
 import { createPollMessage } from './src/lib/createPollMessage';
-import { finishPollMessage } from './src/lib/finishPollMessage';
 import { createPollModal } from './src/lib/createPollModal';
+import { finishPollMessage } from './src/lib/finishPollMessage';
 import { votePoll } from './src/lib/votePoll';
 import { PollCommand } from './src/PollCommand';
 import { VoteCommand } from './src/VoteCommand';
@@ -33,7 +33,32 @@ export class PollApp extends App implements IUIKitInteractionHandler {
 
         const data = context.getInteractionData();
 
-        await createPollMessage(data, read, modify, persistence);
+        const { state }: {
+            state: {
+                poll: {
+                    question: string,
+                    [option: string]: string,
+                },
+            },
+        } = data.view as any;
+
+        if (!state) {
+            return context.getInteractionResponder().viewErrorResponse({
+                viewId: data.view.id,
+                errors: {
+                    question: 'Erro no recebimento',
+                },
+            });
+        }
+
+        try {
+            await createPollMessage(data, read, modify, persistence);
+        } catch (err) {
+            return context.getInteractionResponder().viewErrorResponse({
+                viewId: data.view.id,
+                errors: err,
+            });
+        }
 
         return {
             success: true,
@@ -63,26 +88,25 @@ export class PollApp extends App implements IUIKitInteractionHandler {
             case 'finish': {
 
                 try {
-                    await finishPollMessage({ data, read, persistence, modify })
-                } catch(e) {
-
+                    await finishPollMessage({ data, read, persistence, modify });
+                } catch (e) {
 
                     const { room } = context.getInteractionData();
-                     const errorMessage = modify
+                    const errorMessage = modify
                          .getCreator()
                          .startMessage()
                          .setSender(context.getInteractionData().user)
                          .setText(e.message)
-                         .setUsernameAlias("Poll");
+                         .setUsernameAlias('Poll');
 
-                         if(room) {
+                    if (room) {
                             errorMessage.setRoom(room);
-                         }
-                     modify
+                    }
+                    modify
                          .getNotifier()
                          .notifyUser(
                              context.getInteractionData().user,
-                             errorMessage.getMessage()
+                             errorMessage.getMessage(),
                          );
                 }
             }
