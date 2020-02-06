@@ -5,14 +5,15 @@ import { IUIKitModalViewParam } from '@rocket.chat/apps-engine/definition/uikit/
 
 import { uuid } from './uuid';
 
-export async function createPollModal({ question, persistence, data, modify, options = 2 }: {
+export async function createPollModal({ id = '', question, persistence, data, modify, options = 2 }: {
+    id?: string,
     question?: string,
     persistence: IPersistence,
     data,
     modify: IModify,
     options?: number,
 }): Promise<IUIKitModalViewParam> {
-    const viewId = uuid();
+    const viewId = id || uuid();
 
     const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, viewId);
     await persistence.createWithAssociation({ room: data.room }, association);
@@ -53,6 +54,10 @@ export async function createPollModal({ question, persistence, data, modify, opt
             optional: true,
             element: block.newPlainTextInputElement({
                 actionId: `option-${i}`,
+                placeholder: {
+                    type: TextObjectType.PLAINTEXT,
+                    text: 'Insert an option',
+                },
                 // initialValue: 'Type an option',
             }),
             label: {

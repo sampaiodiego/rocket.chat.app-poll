@@ -86,7 +86,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
             }
 
             case 'addChoice': {
-                const modal = await createPollModal({ data, persistence, modify, options: parseInt(String(data.value), 10) });
+                const modal = await createPollModal({ id: data.container.id, data, persistence, modify, options: parseInt(String(data.value), 10) });
 
                 return context.getInteractionResponder().updateModalViewResponse(modal);
             }
