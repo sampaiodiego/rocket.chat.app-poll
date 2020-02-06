@@ -46,7 +46,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
             return context.getInteractionResponder().viewErrorResponse({
                 viewId: data.view.id,
                 errors: {
-                    question: 'Erro no recebimento',
+                    question: 'Error creating poll',
                 },
             });
         }
@@ -69,7 +69,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
 
         const data = context.getInteractionData();
 
-        // console.log('executeBlockActionHandler ->', data);
+        console.log('executeBlockActionHandler ->', data);
         switch (data.actionId) {
             case 'vote': {
                 await votePoll({ data, read, persistence, modify });
@@ -83,6 +83,12 @@ export class PollApp extends App implements IUIKitInteractionHandler {
                 const modal = await createPollModal({ data, persistence, modify });
 
                 return context.getInteractionResponder().openModalViewResponse(modal);
+            }
+
+            case 'addChoice': {
+                const modal = await createPollModal({ data, persistence, modify, options: parseInt(String(data.value), 10) });
+
+                return context.getInteractionResponder().updateModalViewResponse(modal);
             }
 
             case 'finish': {

@@ -2,13 +2,15 @@ import { IModify, IPersistence } from '@rocket.chat/apps-engine/definition/acces
 import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
 import { TextObjectType } from '@rocket.chat/apps-engine/definition/uikit/blocks';
 import { IUIKitModalViewParam } from '@rocket.chat/apps-engine/definition/uikit/UIKitInteractionResponder';
+
 import { uuid } from './uuid';
 
-export async function createPollModal({ question, persistence, data, modify }: {
+export async function createPollModal({ question, persistence, data, modify, options = 2 }: {
     question?: string,
     persistence: IPersistence,
     data,
     modify: IModify,
+    options?: number,
 }): Promise<IUIKitModalViewParam> {
     const viewId = uuid();
 
@@ -43,29 +45,85 @@ export async function createPollModal({ question, persistence, data, modify }: {
             emoji: true,
         },
     })
-    .addDividerBlock()
-    .addSectionBlock({
-        text: {
-            type: TextObjectType.MARKDOWN,
-            text: '*Add some choices*',
-        },
-    });
+    .addDividerBlock();
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < options; i++) {
         block.addInputBlock({
             blockId: 'poll',
             optional: true,
             element: block.newPlainTextInputElement({
                 actionId: `option-${i}`,
-                // initialValue: 'Some option',
+                // initialValue: 'Type an option',
             }),
             label: {
                 type: TextObjectType.PLAINTEXT,
-                text: `Option (${i + 1})`,
+                text: '',
                 emoji: true,
             },
         });
     }
+
+    block
+        .addActionsBlock({
+            elements: [
+                block.newStaticSelectElement({
+                    placeholder: {
+                        type: TextObjectType.PLAINTEXT,
+                        text: 'Multiple choices',
+                    },
+                    initialValue: ['multiple'],
+                    options: [
+                        {
+                            text: {
+                                type: TextObjectType.PLAINTEXT,
+                                text: 'Multiple choices',
+                            },
+                            value: 'multiple',
+                        },
+                        {
+                            text: {
+                                type: TextObjectType.PLAINTEXT,
+                                text: 'Single choice',
+                            },
+                            value: 'single',
+                        },
+                    ],
+                    actionId: 'type',
+                }),
+                block.newButtonElement({
+                    actionId: 'addChoice',
+                    text: {
+                        type: TextObjectType.PLAINTEXT,
+                        text: 'Add a choice',
+                    },
+                    value: String(options + 1),
+                }),
+                block.newStaticSelectElement({
+                    placeholder: {
+                        type: TextObjectType.PLAINTEXT,
+                        text: 'Open vote',
+                    },
+                    initialValue: ['open'],
+                    options: [
+                        {
+                            text: {
+                                type: TextObjectType.PLAINTEXT,
+                                text: 'Open vote',
+                            },
+                            value: 'open',
+                        },
+                        {
+                            text: {
+                                type: TextObjectType.PLAINTEXT,
+                                text: 'Confidential voce',
+                            },
+                            value: 'confidential',
+                        },
+                    ],
+                    actionId: 'type',
+                }),
+            ],
+        });
 
     return {
         id: viewId,

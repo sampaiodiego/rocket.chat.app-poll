@@ -11,14 +11,14 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
             type: TextObjectType.PLAINTEXT,
             text: question,
         },
-        accessory: {
-            type: BlockElementType.BUTTON,
-            actionId: 'finish',
-            text: {
-                type: TextObjectType.PLAINTEXT,
-                text: 'Finish poll',
-            },
-        },
+        // accessory: {
+        //     type: BlockElementType.OVERFLOW,
+        //     actionId: 'finish',
+        //     text: {
+        //         type: TextObjectType.PLAINTEXT,
+        //         text: 'Finish poll',
+        //     },
+        // },
     });
     block.addDividerBlock();
     options.forEach((option, index) => {

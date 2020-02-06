@@ -32,7 +32,6 @@ export async function votePoll({ data, read, persistence, modify }: {
 
     const block = modify.getCreator().getBlockBuilder();
 
-
     createPollBlocks(block, poll.question, poll.options, poll);
 
     message.setBlocks(block);
