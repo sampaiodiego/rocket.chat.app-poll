@@ -26,7 +26,7 @@ export async function storeVote(poll: IPoll, voteIndex: number, voter: IUser, { 
     if (poll.singleChoice && hasVoted === -1 && previousVote !== -1) {
         poll.totalVotes--;
         poll.votes[previousVote].quantity--;
-        poll.votes[previousVote].voters = poll.votes[previousVote].voters.filter((voter) => voter !== username);
+        poll.votes[previousVote].voters = poll.votes[previousVote].voters.filter((optionVoter) => optionVoter !== username);
     }
 
     return persis.updateByAssociation(association, poll);

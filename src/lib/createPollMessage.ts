@@ -19,13 +19,14 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
         room: IRoom;
     }>;
 
-    if (!state.poll || !state.poll.question) {
+    if (!state.poll || !state.poll.question || state.poll.question.trim() === '') {
         throw { question: 'Please type your question here' };
     }
 
     const options = Object.entries<any>(state.poll || {})
         .filter(([key]) => key !== 'question')
-        .map(([, question]) => question);
+        .map(([, option]) => option)
+        .filter((option) => option.trim() !== '');
 
     if (!options.length) {
         throw {
@@ -48,11 +49,10 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
 
         // console.log('context ->', context);
         const builder = modify.getCreator().startMessage()
-            .setSender(data.user)
-            .setRoom(record.room);
+            // .setSender(data.user)
+            .setRoom(record.room)
             // .setAvatarUrl('https://user-images.githubusercontent.com/8591547/44113440-751b9ff8-9fde-11e8-9e8c-8a555e6e382b.png')
-            // .setText(`_${state.poll.question}_`)
-            // .setUsernameAlias('Poll');
+            .setText(state.poll.question);
 
         const poll: IPoll = {
             question: state.poll.question,
