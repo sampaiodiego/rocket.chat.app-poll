@@ -1,7 +1,7 @@
 {
     "id": "c33fa1a6-68a7-491e-bf49-9d7b99671c48",
-    "version": "2.0.0-beta.0",
-    "requiredApiVersion": "^1.7.1",
+    "version": "2.0.0-beta.1",
+    "requiredApiVersion": "^1.12.0-beta.2703",
     "iconFile": "icon.png",
     "author": {
         "name": "Diego Sampaio",
@@ -11,5 +11,5 @@
     "name": "Poll",
     "nameSlug": "poll",
     "classFile": "PollApp.ts",
-    "description": "A simple app to create polls on Rocket.Chat. Use the slash command: /poll \"Question?\" \"Option 1\" \"Option 2\" \"Option 3\"."
+    "description": "A simple app to create polls on Rocket.Chat. Use the slash command: /poll [Question?]"
 }

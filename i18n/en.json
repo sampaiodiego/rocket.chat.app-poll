@@ -1,4 +1,4 @@
 {
     "cmd_description": "Create a simple poll",
-    "params_example": "First parameter is the question, the next one are the poll options. Add them between quotes."
+    "params_example": "Type your question or fill it up on the form."
 }
