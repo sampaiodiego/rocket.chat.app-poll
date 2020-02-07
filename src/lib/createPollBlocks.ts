@@ -56,14 +56,17 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
         if (!voters) {
             return;
         }
-        block.addContextBlock({
-            elements: [
-                {
-                    type: TextObjectType.MARKDOWN,
-                    text: voters,
-                },
-            ],
-        });
+
+        if (!poll.confidential) {
+            block.addContextBlock({
+                elements: [
+                    {
+                        type: TextObjectType.MARKDOWN,
+                        text: voters,
+                    },
+                ],
+            });
+        }
     });
     // block.addSectionBlock({
     //     text: {

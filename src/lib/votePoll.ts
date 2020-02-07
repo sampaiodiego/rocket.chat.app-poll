@@ -21,7 +21,7 @@ export async function votePoll({ data, read, persistence, modify }: {
         throw new Error('no such poll');
     }
 
-    if(poll.finished) {
+    if (poll.finished) {
         throw new Error('poll is already finished');
     }
 

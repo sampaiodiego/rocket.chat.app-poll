@@ -9,6 +9,8 @@ export async function storeVote(poll: IPoll, voteIndex: number, voter: IUser, { 
 
     const { username } = voter;
 
+    const previousVote = poll.votes.findIndex(({ voters }) => voters.indexOf(username) !== -1);
+
     const hasVoted = poll.votes[voteIndex].voters.indexOf(username);
 
     if (hasVoted !== -1) {
@@ -20,5 +22,12 @@ export async function storeVote(poll: IPoll, voteIndex: number, voter: IUser, { 
         poll.votes[voteIndex].quantity++;
         poll.votes[voteIndex].voters.push(username);
     }
+
+    if (poll.singleChoice && hasVoted === -1 && previousVote !== -1) {
+        poll.totalVotes--;
+        poll.votes[previousVote].quantity--;
+        poll.votes[previousVote].voters = poll.votes[previousVote].voters.filter((voter) => voter !== username);
+    }
+
     return persis.updateByAssociation(association, poll);
 }

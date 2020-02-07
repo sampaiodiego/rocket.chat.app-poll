@@ -39,6 +39,10 @@ export class PollApp extends App implements IUIKitInteractionHandler {
                     question: string,
                     [option: string]: string,
                 },
+                config?: {
+                    mode?: string,
+                    visibility?: string,
+                },
             },
         } = data.view as any;
 
@@ -69,7 +73,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
 
         const data = context.getInteractionData();
 
-        console.log('executeBlockActionHandler ->', data);
+        // console.log('executeBlockActionHandler ->', data);
         switch (data.actionId) {
             case 'vote': {
                 await votePoll({ data, read, persistence, modify });

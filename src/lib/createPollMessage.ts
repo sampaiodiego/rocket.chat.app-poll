@@ -43,6 +43,9 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
     // console.log('options ->', options);
     try {
 
+        const { config = { mode: 'single', visibility: 'open' } } = state;
+        const { mode = 'single', visibility = 'open' } = config;
+
         // console.log('context ->', context);
         const builder = modify.getCreator().startMessage()
             .setSender(data.user)
@@ -57,6 +60,8 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
             options,
             totalVotes: 0,
             votes: options.map(() => ({ quantity: 0, voters: [] })),
+            confidential: visibility === 'confidential',
+            singleChoice: mode === 'single',
         };
 
         // console.log('poll ->', poll);

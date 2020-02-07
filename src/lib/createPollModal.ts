@@ -70,12 +70,14 @@ export async function createPollModal({ id = '', question, persistence, data, mo
 
     block
         .addActionsBlock({
+            blockId: 'config',
             elements: [
                 block.newStaticSelectElement({
                     placeholder: {
                         type: TextObjectType.PLAINTEXT,
                         text: 'Multiple choices',
                     },
+                    actionId: 'mode',
                     initialValue: ['multiple'],
                     options: [
                         {
@@ -93,7 +95,6 @@ export async function createPollModal({ id = '', question, persistence, data, mo
                             value: 'single',
                         },
                     ],
-                    actionId: 'type',
                 }),
                 block.newButtonElement({
                     actionId: 'addChoice',
@@ -108,6 +109,7 @@ export async function createPollModal({ id = '', question, persistence, data, mo
                         type: TextObjectType.PLAINTEXT,
                         text: 'Open vote',
                     },
+                    actionId: 'visibility',
                     initialValue: ['open'],
                     options: [
                         {
@@ -120,12 +122,11 @@ export async function createPollModal({ id = '', question, persistence, data, mo
                         {
                             text: {
                                 type: TextObjectType.PLAINTEXT,
-                                text: 'Confidential voce',
+                                text: 'Confidential vote',
                             },
                             value: 'confidential',
                         },
                     ],
-                    actionId: 'type',
                 }),
             ],
         });
