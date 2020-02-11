@@ -4,6 +4,7 @@ export interface IVoter {
 }
 export interface IPoll {
     msgId: string;
+    uid: string; // user who created the poll
     question: string;
     options: Array<string>;
     totalVotes: number;

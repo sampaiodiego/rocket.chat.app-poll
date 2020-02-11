@@ -5,7 +5,7 @@ import { IUIKitViewSubmitIncomingInteraction } from '@rocket.chat/apps-engine/de
 import { IPoll } from '../IPoll';
 import { createPollBlocks } from './createPollBlocks';
 
-export async function createPollMessage(data: IUIKitViewSubmitIncomingInteraction, read: IRead, modify: IModify, persistence: IPersistence) {
+export async function createPollMessage(data: IUIKitViewSubmitIncomingInteraction, read: IRead, modify: IModify, persistence: IPersistence, uid: string) {
     // console.log('data ->', data);
 
     const { view: { id } } = data;
@@ -56,6 +56,7 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
 
         const poll: IPoll = {
             question: state.poll.question,
+            uid,
             msgId: '',
             options,
             totalVotes: 0,

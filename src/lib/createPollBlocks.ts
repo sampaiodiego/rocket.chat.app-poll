@@ -1,4 +1,4 @@
-import { BlockBuilder, BlockElementType, TextObjectType } from '@rocket.chat/apps-engine/definition/uikit';
+import { BlockBuilder, BlockElementType } from '@rocket.chat/apps-engine/definition/uikit';
 
 import { buildVoters } from '../buildOptions';
 import { buildVoteGraph } from './buildVoteGraph';
@@ -7,33 +7,44 @@ import { IPoll } from '../IPoll';
 
 export function createPollBlocks(block: BlockBuilder, question: string, options: Array<any>, poll: IPoll) {
     block.addSectionBlock({
-        text: {
-            type: TextObjectType.PLAINTEXT,
-            text: question,
+        text: block.newPlainTextObject(question),
+        ...!poll.finished && {
+            accessory: {
+                type: BlockElementType.OVERFLOW_MENU,
+                actionId: 'finish',
+                options: [
+                    {
+                        text: block.newPlainTextObject('Finish poll'),
+                        value: 'finish'
+                    }
+                ],
+                confirm: {
+                    title: block.newPlainTextObject('Sure?'),
+                    text: block.newPlainTextObject('text'),
+                    confirm: block.newPlainTextObject('yes'),
+                    deny: block.newPlainTextObject('no'),
+                },
+            },
         },
-        // accessory: {
-        //     type: BlockElementType.OVERFLOW,
-        //     actionId: 'finish',
-        //     text: {
-        //         type: TextObjectType.PLAINTEXT,
-        //         text: 'Finish poll',
-        //     },
-        // },
     });
+
+    if (poll.finished) {
+        block.addContextBlock({
+            elements: [
+                block.newMarkdownTextObject(`The poll has been finished at ${new Date().toISOString()}`),
+            ]
+        });
+    }
+
     block.addDividerBlock();
+
     options.forEach((option, index) => {
         block.addSectionBlock({
-            text: {
-                type: TextObjectType.PLAINTEXT,
-                text: option,
-            },
+            text: block.newPlainTextObject(option),
             accessory: {
                 type: BlockElementType.BUTTON,
                 actionId: 'vote',
-                text: {
-                    type: TextObjectType.PLAINTEXT,
-                    text: 'Vote',
-                },
+                text: block.newPlainTextObject('Vote'),
                 value: String(index),
             },
         });
@@ -45,10 +56,7 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
         const graph = buildVoteGraph(poll.votes[index], poll.totalVotes);
         block.addContextBlock({
             elements: [
-                {
-                    type: TextObjectType.MARKDOWN,
-                    text: graph,
-                },
+                block.newMarkdownTextObject(graph),
             ],
         });
 
@@ -60,29 +68,11 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
         if (!poll.confidential) {
             block.addContextBlock({
                 elements: [
-                    {
-                        type: TextObjectType.MARKDOWN,
-                        text: voters,
-                    },
+                    block.newMarkdownTextObject(voters),
                 ],
             });
         }
     });
-    // block.addSectionBlock({
-    //     text: {
-    //         type: TextObjectType.PLAINTEXT,
-    //         text: 'Yes',
-    //     },
-    //     accessory: {
-    //         type: BlockElementType.BUTTON,
-    //         actionId: 'voteOption1',
-    //         text: {
-    //             type: TextObjectType.PLAINTEXT,
-    //             text: 'Vote',
-    //         },
-    //         value: 'option1',
-    //     },
-    // });
     // block.addContextBlock({
     //     elements: [
     //         {

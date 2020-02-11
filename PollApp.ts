@@ -20,7 +20,6 @@ import { createPollModal } from './src/lib/createPollModal';
 import { finishPollMessage } from './src/lib/finishPollMessage';
 import { votePoll } from './src/lib/votePoll';
 import { PollCommand } from './src/PollCommand';
-import { VoteCommand } from './src/VoteCommand';
 
 export class PollApp extends App implements IUIKitInteractionHandler {
 
@@ -56,7 +55,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
         }
 
         try {
-            await createPollMessage(data, read, modify, persistence);
+            await createPollMessage(data, read, modify, persistence, data.user.id);
         } catch (err) {
             return context.getInteractionResponder().viewErrorResponse({
                 viewId: data.view.id,
@@ -130,7 +129,6 @@ export class PollApp extends App implements IUIKitInteractionHandler {
 
     public async initialize(configuration: IConfigurationExtend): Promise<void> {
         await configuration.slashCommands.provideSlashCommand(new PollCommand());
-        await configuration.slashCommands.provideSlashCommand(new VoteCommand(this));
         await configuration.settings.provideSetting({
             id : 'use-user-name',
             i18nLabel: 'Use name attribute to display voters, instead of username',
