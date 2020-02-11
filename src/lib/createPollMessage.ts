@@ -43,9 +43,8 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
 
     // console.log('options ->', options);
     try {
-
-        const { config = { mode: 'single', visibility: 'open' } } = state;
-        const { mode = 'single', visibility = 'open' } = config;
+        const { config = { mode: 'multiple', visibility: 'open' } } = state;
+        const { mode = 'multiple', visibility = 'open' } = config;
 
         // console.log('context ->', context);
         const builder = modify.getCreator().startMessage()

@@ -28,9 +28,9 @@ export class PollApp extends App implements IUIKitInteractionHandler {
     }
 
     public async executeViewSubmitHandler(context: UIKitViewSubmitInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
-        // console.log('executeViewSubmitHandler ->', data);
 
         const data = context.getInteractionData();
+        // console.log('executeViewSubmitHandler ->', data);
 
         const { state }: {
             state: {
@@ -71,8 +71,8 @@ export class PollApp extends App implements IUIKitInteractionHandler {
     public async executeBlockActionHandler(context: UIKitBlockInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
 
         const data = context.getInteractionData();
-
         // console.log('executeBlockActionHandler ->', data);
+
         switch (data.actionId) {
             case 'vote': {
                 await votePoll({ data, read, persistence, modify });
