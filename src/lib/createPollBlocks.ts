@@ -15,8 +15,8 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
                 options: [
                     {
                         text: block.newPlainTextObject('Finish poll'),
-                        value: 'finish'
-                    }
+                        value: 'finish',
+                    },
                 ],
                 confirm: {
                     title: block.newPlainTextObject('Sure?'),
@@ -32,7 +32,7 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
         block.addContextBlock({
             elements: [
                 block.newMarkdownTextObject(`The poll has been finished at ${new Date().toISOString()}`),
-            ]
+            ],
         });
     }
 
@@ -41,17 +41,19 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
     options.forEach((option, index) => {
         block.addSectionBlock({
             text: block.newPlainTextObject(option),
-            accessory: {
-                type: BlockElementType.BUTTON,
-                actionId: 'vote',
-                text: block.newPlainTextObject('Vote'),
-                value: String(index),
+            ...!poll.finished && {
+                    accessory: {
+                    type: BlockElementType.BUTTON,
+                    actionId: 'vote',
+                    text: block.newPlainTextObject('Vote'),
+                    value: String(index),
+                },
             },
         });
+
         if (!poll.votes[index]) {
             return;
         }
-        const voters = buildVoters(poll.votes[index], poll.totalVotes);
 
         const graph = buildVoteGraph(poll.votes[index], poll.totalVotes);
         block.addContextBlock({
@@ -60,25 +62,21 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
             ],
         });
 
+        if (poll.confidential) {
+            return;
+        }
+
+        const voters = buildVoters(poll.votes[index], poll.totalVotes);
+
         // addVoters(poll.votes[index], poll.totalVotes)
         if (!voters) {
             return;
         }
 
-        if (!poll.confidential) {
-            block.addContextBlock({
-                elements: [
-                    block.newMarkdownTextObject(voters),
-                ],
-            });
-        }
+        block.addContextBlock({
+            elements: [
+                block.newMarkdownTextObject(voters),
+            ],
+        });
     });
-    // block.addContextBlock({
-    //     elements: [
-    //         {
-    //             type: TextObjectType.MARKDOWN,
-    //             text: '2 votes - @diego.sampaio, @guilherme.gazzo',
-    //         },
-    //     ],
-    // });
 }
