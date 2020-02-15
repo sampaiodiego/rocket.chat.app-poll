@@ -1,8 +1,11 @@
 # Rocket.Chat Poll App
 
-## Requirements
+## Compatibility table
 
-Rocket.Chat Version: **0.74.1**
+Poll Version | Minimum Rocket.Chat Version
+------------ | -------------
+v1.x | **0.74.1**
+v2.x | **3.0.0**
 
 ## Installing
 
