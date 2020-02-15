@@ -1,9 +1,8 @@
 import { BlockBuilder, BlockElementType } from '@rocket.chat/apps-engine/definition/uikit';
 
-import { buildVoters } from '../buildOptions';
-import { buildVoteGraph } from './buildVoteGraph';
-
 import { IPoll } from '../IPoll';
+import { buildVoteGraph } from './buildVoteGraph';
+import { buildVoters } from './buildVoters';
 
 export function createPollBlocks(block: BlockBuilder, question: string, options: Array<any>, poll: IPoll, showNames: boolean) {
     block.addSectionBlock({
@@ -18,12 +17,6 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
                         value: 'finish',
                     },
                 ],
-                // confirm: {
-                //     title: block.newPlainTextObject('Sure?'),
-                //     text: block.newPlainTextObject('text'),
-                //     confirm: block.newPlainTextObject('yes'),
-                //     deny: block.newPlainTextObject('no'),
-                // },
             },
         },
     });

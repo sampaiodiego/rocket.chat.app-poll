@@ -32,7 +32,6 @@ export async function createPollModal({ id = '', question, persistence, data, mo
             element: block.newPlainTextInputElement({
                 actionId: `option-${i}`,
                 placeholder: block.newPlainTextObject('Insert an option'),
-                // initialValue: 'Type an option',
             }),
             label: block.newPlainTextObject(''),
         });

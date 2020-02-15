@@ -12,8 +12,6 @@ export class PollCommand implements ISlashCommand {
     public async executor(context: SlashCommandContext, read: IRead, modify: IModify, http: IHttp, persis: IPersistence): Promise<void> {
         const triggerId = context.getTriggerId();
 
-        // console.log('app', context.getRoom());
-
         const question = context.getArguments().join(' ');
 
         if (triggerId) {

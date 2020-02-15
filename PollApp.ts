@@ -28,9 +28,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
     }
 
     public async executeViewSubmitHandler(context: UIKitViewSubmitInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
-
         const data = context.getInteractionData();
-        // console.log('executeViewSubmitHandler ->', data);
 
         const { state }: {
             state: {
@@ -69,9 +67,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
     }
 
     public async executeBlockActionHandler(context: UIKitBlockInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
-
         const data = context.getInteractionData();
-        // console.log('executeBlockActionHandler ->', data);
 
         switch (data.actionId) {
             case 'vote': {
@@ -95,7 +91,6 @@ export class PollApp extends App implements IUIKitInteractionHandler {
             }
 
             case 'finish': {
-
                 try {
                     await finishPollMessage({ data, read, persistence, modify });
                 } catch (e) {
@@ -132,12 +127,11 @@ export class PollApp extends App implements IUIKitInteractionHandler {
         await configuration.settings.provideSetting({
             id : 'use-user-name',
             i18nLabel: 'Use name attribute to display voters, instead of username',
-            i18nDescription: 'When checked, display voters as full user names instead of @name',
+            i18nDescription: 'When checked, display voters as full user names instead of username',
             required: false,
             type: SettingType.BOOLEAN,
             public: true,
             packageValue: false,
         });
     }
-
 }
