@@ -1,10 +1,20 @@
+import { IUser } from '@rocket.chat/apps-engine/definition/users';
+
+export type IVoterPerson = Pick<IUser, 'id' | 'username' | 'name'>;
+
 export interface IVoter {
     quantity: number;
-    voters: Array<string>;
+    voters: Array<IVoterPerson>;
 }
+
 export interface IPoll {
-    messageId: string;
+    msgId: string;
+    uid: string; // user who created the poll
+    question: string;
     options: Array<string>;
     totalVotes: number;
     votes: Array<IVoter>;
+    finished?: boolean;
+    confidential?: boolean;
+    singleChoice?: boolean;
 }
