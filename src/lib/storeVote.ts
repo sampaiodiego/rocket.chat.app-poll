@@ -4,14 +4,17 @@ import { IUser } from '@rocket.chat/apps-engine/definition/users';
 
 import { IPoll } from '../IPoll';
 
-export async function storeVote(poll: IPoll, voteIndex: number, voter: IUser, { persis }: { persis: IPersistence }) {
+export async function storeVote(poll: IPoll, voteIndex: number, { id, username, name }: IUser, { persis }: { persis: IPersistence }) {
     const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, poll.msgId);
 
-    const { username } = voter;
+    const voter = { id, username, name };
 
-    const previousVote = poll.votes.findIndex(({ voters }) => voters.indexOf(username) !== -1);
+    const findVoter = ({ id: voterId }) => voterId === id;
+    const filterVoter = ({ id: voterId }) => voterId !== id;
 
-    const hasVoted = poll.votes[voteIndex].voters.indexOf(username);
+    const previousVote = poll.votes.findIndex(({ voters }) => voters.some(findVoter));
+
+    const hasVoted = poll.votes[voteIndex].voters.findIndex(findVoter);
 
     if (hasVoted !== -1) {
         poll.totalVotes--;
@@ -20,13 +23,13 @@ export async function storeVote(poll: IPoll, voteIndex: number, voter: IUser, { 
     } else {
         poll.totalVotes++;
         poll.votes[voteIndex].quantity++;
-        poll.votes[voteIndex].voters.push(username);
+        poll.votes[voteIndex].voters.push(voter);
     }
 
     if (poll.singleChoice && hasVoted === -1 && previousVote !== -1) {
         poll.totalVotes--;
         poll.votes[previousVote].quantity--;
-        poll.votes[previousVote].voters = poll.votes[previousVote].voters.filter((optionVoter) => optionVoter !== username);
+        poll.votes[previousVote].voters = poll.votes[previousVote].voters.filter(filterVoter);
     }
 
     return persis.updateByAssociation(association, poll);

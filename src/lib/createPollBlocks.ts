@@ -5,7 +5,7 @@ import { buildVoteGraph } from './buildVoteGraph';
 
 import { IPoll } from '../IPoll';
 
-export function createPollBlocks(block: BlockBuilder, question: string, options: Array<any>, poll: IPoll) {
+export function createPollBlocks(block: BlockBuilder, question: string, options: Array<any>, poll: IPoll, showNames: boolean) {
     block.addSectionBlock({
         text: block.newPlainTextObject(question),
         ...!poll.finished && {
@@ -18,12 +18,12 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
                         value: 'finish',
                     },
                 ],
-                confirm: {
-                    title: block.newPlainTextObject('Sure?'),
-                    text: block.newPlainTextObject('text'),
-                    confirm: block.newPlainTextObject('yes'),
-                    deny: block.newPlainTextObject('no'),
-                },
+                // confirm: {
+                //     title: block.newPlainTextObject('Sure?'),
+                //     text: block.newPlainTextObject('text'),
+                //     confirm: block.newPlainTextObject('yes'),
+                //     deny: block.newPlainTextObject('no'),
+                // },
             },
         },
     });
@@ -31,7 +31,7 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
     if (poll.finished) {
         block.addContextBlock({
             elements: [
-                block.newMarkdownTextObject(`The poll has been finished at ${new Date().toISOString()}`),
+                block.newMarkdownTextObject(`The poll has been finished at ${new Date().toUTCString()}`),
             ],
         });
     }
@@ -66,9 +66,7 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
             return;
         }
 
-        const voters = buildVoters(poll.votes[index], poll.totalVotes);
-
-        // addVoters(poll.votes[index], poll.totalVotes)
+        const voters = buildVoters(poll.votes[index], showNames);
         if (!voters) {
             return;
         }

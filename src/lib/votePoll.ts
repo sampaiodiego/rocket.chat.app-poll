@@ -32,7 +32,9 @@ export async function votePoll({ data, read, persistence, modify }: {
 
     const block = modify.getCreator().getBlockBuilder();
 
-    createPollBlocks(block, poll.question, poll.options, poll);
+    const showNames = await read.getEnvironmentReader().getSettings().getById('use-user-name');
+
+    createPollBlocks(block, poll.question, poll.options, poll, showNames.value);
 
     message.setBlocks(block);
 

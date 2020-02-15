@@ -1,35 +1,9 @@
-import { IPoll, IVoter } from './IPoll';
+import { IVoter } from './IPoll';
 
-export const emojis = [
-    ':zero:',
-    ':one:',
-    ':two:',
-    ':three:',
-    ':four:',
-    ':five:',
-    ':six:',
-    ':seven:',
-    ':eight:',
-    ':nine:',
-    ':keycap_ten:',
-];
+const votersNames = (voters: IVoter['voters'], showNames: boolean) =>
+    voters.map(({ name, username }) => showNames ? name : username).join(' ');
 
-function addVoters(votes: IVoter, totalVotes: IPoll['totalVotes']) {
-    if (!votes) {
-        return '';
-    }
-    // const percentage = votes.quantity > 0 ? votes.quantity / totalVotes * 100 : 0;
-    // let voters = ` \`${ votes.quantity } (${ percentage.toFixed(2) }%)\``;
-    let voters = ` \`${ votes.quantity }\``;
-
-    if (votes.voters.length > 0) {
-        voters += `\n_${ votes.voters.join('_, _') }_`;
-    }
-
-    return voters;
-}
-
-export function buildVoters(votes: IVoter, totalVotes: IPoll['totalVotes']) {
+export function buildVoters(votes: IVoter, showNames: boolean) {
     if (!votes) {
         return '';
     }
@@ -38,16 +12,7 @@ export function buildVoters(votes: IVoter, totalVotes: IPoll['totalVotes']) {
         return '';
     }
 
-    // const percentage = votes.quantity > 0 ? votes.quantity / totalVotes * 100 : 0;
-    // let voters = ` \`${ votes.quantity } (${ percentage.toFixed(2) }%)\``;
     const votesStr = votes.quantity === 1 ? 'vote' : 'votes';
 
-    return `${ votes.quantity } ${ votesStr } - ${ votes.voters.join(' ') }`;
-}
-
-export function buildOptions(options: Array<any>, poll: IPoll) {
-    return {
-        color: '#73a7ce',
-        text: options.map((option, index) => `${emojis[index + 1]} ${option}${addVoters(poll.votes[index], poll.totalVotes)}`).join('\n'),
-    };
+    return `${ votes.quantity } ${ votesStr } - ${ votersNames(votes.voters, showNames) }`;
 }

@@ -46,9 +46,11 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
         const { config = { mode: 'multiple', visibility: 'open' } } = state;
         const { mode = 'multiple', visibility = 'open' } = config;
 
-        // console.log('context ->', context);
+        const showNames = await read.getEnvironmentReader().getSettings().getById('use-user-name');
+
         const builder = modify.getCreator().startMessage()
             // .setSender(data.user)
+            .setUsernameAlias((showNames.value && data.user.name) || data.user.username)
             .setRoom(record.room)
             // .setAvatarUrl('https://user-images.githubusercontent.com/8591547/44113440-751b9ff8-9fde-11e8-9e8c-8a555e6e382b.png')
             .setText(state.poll.question);
@@ -64,10 +66,8 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
             singleChoice: mode === 'single',
         };
 
-        // console.log('poll ->', poll);
-
         const block = modify.getCreator().getBlockBuilder();
-        createPollBlocks(block, poll.question, options, poll);
+        createPollBlocks(block, poll.question, options, poll, showNames.value);
 
         // console.log('setBlocks')
 
@@ -83,21 +83,5 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
         await persistence.createWithAssociation(poll, pollAssociation);
     } catch (e) {
         throw e;
-        // builder.setText('An error occured when trying to send the gif :disappointed_relieved:');
-        // modify.getNotifier().notifyUser(context.getSender(), builder.getMessage());
-
-//         const errorText = `An error occured when trying to create the poll :disappointed_relieved:
-
-// Command executed:
-// \`\`\`
-// /poll ${ params }
-// \`\`\``;
-//                     const builder = modify.getCreator().startMessage()
-//                         .setSender(context.getSender())
-//                         .setRoom(context.getRoom())
-//                         .setAvatarUrl(avatarURL)
-//                         .setText(errorText)
-//                         .setUsernameAlias('Poll');
-
     }
 }

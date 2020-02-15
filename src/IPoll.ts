@@ -1,7 +1,12 @@
+import { IUser } from '@rocket.chat/apps-engine/definition/users';
+
+export type IVoterPerson = Pick<IUser, 'id' | 'username' | 'name'>;
+
 export interface IVoter {
     quantity: number;
-    voters: Array<string>;
+    voters: Array<IVoterPerson>;
 }
+
 export interface IPoll {
     msgId: string;
     uid: string; // user who created the poll

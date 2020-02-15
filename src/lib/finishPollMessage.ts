@@ -34,7 +34,7 @@ export async function finishPollMessage({ data, read, persistence, modify }: {
     }
 
     if (poll.uid !== data.user.id) {
-        throw new Error("You are not allowed to finish the poll"); // send an ephemeral message
+        throw new Error('You are not allowed to finish the poll'); // send an ephemeral message
     }
 
     try {
@@ -45,7 +45,9 @@ export async function finishPollMessage({ data, read, persistence, modify }: {
 
         const block = modify.getCreator().getBlockBuilder();
 
-        createPollBlocks(block, poll.question, poll.options, poll);
+        const showNames = await read.getEnvironmentReader().getSettings().getById('use-user-name');
+
+        createPollBlocks(block, poll.question, poll.options, poll, showNames.value);
 
         message.setBlocks(block);
 
