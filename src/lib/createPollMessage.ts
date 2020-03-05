@@ -36,9 +36,16 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
     }
 
     if (options.length === 1) {
-        throw {
-            'option-1': 'Please provide one more option',
-        };
+        if (!state.poll['option-0'] || (state.poll['option-0'] && state.poll['option-0'] === '')) {
+            throw {
+                'option-0': 'Please provide one more option',
+            };
+        }
+        if (!state.poll['option-1'] || (state.poll['option-1'] && state.poll['option-1'] === '')) {
+            throw {
+                'option-1': 'Please provide one more option',
+            };
+        }
     }
 
     try {
