@@ -8,6 +8,11 @@ import {
 import { IPoll } from '../IPoll';
 import { createPollBlocks } from './createPollBlocks';
 
+let totalChoices = 2;
+export const checkDeleteChoice = (value) => {
+    totalChoices = value;
+}
+
 export async function createPollMessage(data: IUIKitViewSubmitIncomingInteraction, read: IRead, modify: IModify, persistence: IPersistence, uid: string) {
     const { view: { id } } = data;
     const { state }: {
@@ -25,6 +30,7 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
 
     const options = Object.entries<any>(state.poll || {})
         .filter(([key]) => key !== 'question')
+        .filter(([param]) => param < `option-${totalChoices}`)
         .map(([, option]) => option)
         .filter((option) => option.trim() !== '');
 

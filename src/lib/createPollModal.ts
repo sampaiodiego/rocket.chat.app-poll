@@ -41,6 +41,11 @@ export async function createPollModal({ id = '', question, persistence, data, mo
         .addActionsBlock({
             blockId: 'config',
             elements: [
+                block.newButtonElement({
+                    actionId: 'deleteChoice',
+                    text: block.newPlainTextObject('Delete Choice'),
+                    value: String(options + 1),
+                }),
                 block.newStaticSelectElement({
                     placeholder: block.newPlainTextObject('Multiple choices'),
                     actionId: 'mode',
