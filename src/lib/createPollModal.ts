@@ -46,6 +46,19 @@ export async function createPollModal({ id = '', question, persistence, data, mo
                     text: block.newPlainTextObject('Delete Choice'),
                     value: String(options + 1),
                 }),
+                block.newButtonElement({
+                    actionId: 'addChoice',
+                    text: block.newPlainTextObject('Add a choice'),
+                    value: String(options + 1),
+                }),
+            ],
+        })
+        .addDividerBlock();
+
+    block
+        .addActionsBlock({
+            blockId: 'config',
+            elements: [
                 block.newStaticSelectElement({
                     placeholder: block.newPlainTextObject('Multiple choices'),
                     actionId: 'mode',
@@ -61,11 +74,14 @@ export async function createPollModal({ id = '', question, persistence, data, mo
                         },
                     ],
                 }),
-                block.newButtonElement({
-                    actionId: 'addChoice',
-                    text: block.newPlainTextObject('Add a choice'),
-                    value: String(options + 1),
-                }),
+            ],
+        })
+        .addDividerBlock();
+
+    block
+        .addActionsBlock({
+            blockId: 'config',
+            elements: [
                 block.newStaticSelectElement({
                     placeholder: block.newPlainTextObject('Open vote'),
                     actionId: 'visibility',
