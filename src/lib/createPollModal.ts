@@ -37,47 +37,56 @@ export async function createPollModal({ id = '', question, persistence, data, mo
         });
     }
 
-    block
-        .addActionsBlock({
-            blockId: 'config',
-            elements: [
-                block.newStaticSelectElement({
-                    placeholder: block.newPlainTextObject('Multiple choices'),
-                    actionId: 'mode',
-                    initialValue: 'multiple',
-                    options: [
-                        {
-                            text: block.newPlainTextObject('Multiple choices'),
-                            value: 'multiple',
-                        },
-                        {
-                            text: block.newPlainTextObject('Single choice'),
-                            value: 'single',
-                        },
-                    ],
-                }),
-                block.newButtonElement({
-                    actionId: 'addChoice',
-                    text: block.newPlainTextObject('Add a choice'),
-                    value: String(options + 1),
-                }),
-                block.newStaticSelectElement({
-                    placeholder: block.newPlainTextObject('Open vote'),
-                    actionId: 'visibility',
-                    initialValue: 'open',
-                    options: [
-                        {
-                            text: block.newPlainTextObject('Open vote'),
-                            value: 'open',
-                        },
-                        {
-                            text: block.newPlainTextObject('Confidential vote'),
-                            value: 'confidential',
-                        },
-                    ],
-                }),
+    block.addActionsBlock({
+        blockId: 'config',
+        elements: [
+            block.newButtonElement({
+                actionId: 'addChoice',
+                text: block.newPlainTextObject('Add a choice'),
+                value: String(options + 1),
+            }),
+        ],
+    });
+
+    block.addInputBlock({
+        blockId: 'config',
+        element: block.newStaticSelectElement({
+            placeholder: block.newPlainTextObject('Multiple choices'),
+            actionId: 'mode',
+            initialValue: 'multiple',
+            options: [
+                {
+                    text: block.newPlainTextObject('Multiple choices'),
+                    value: 'multiple',
+                },
+                {
+                    text: block.newPlainTextObject('Single choice'),
+                    value: 'single',
+                },
             ],
-        });
+        }),
+        label: block.newPlainTextObject(''),
+    });
+
+    block.addInputBlock({
+        blockId: 'config',
+        element: block.newStaticSelectElement({
+            placeholder: block.newPlainTextObject('Open vote'),
+            actionId: 'visibility',
+            initialValue: 'open',
+            options: [
+                {
+                    text: block.newPlainTextObject('Open vote'),
+                    value: 'open',
+                },
+                {
+                    text: block.newPlainTextObject('Confidential vote'),
+                    value: 'confidential',
+                },
+            ],
+        }),
+        label: block.newPlainTextObject(''),
+    });
 
     return {
         id: viewId,
