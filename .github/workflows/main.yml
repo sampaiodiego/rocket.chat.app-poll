@@ -1,0 +1,30 @@
+name: Build and Publish
+
+on:
+  release:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: '12'
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Install Rocket.Chat Apps cli
+        run: npm i -g @rocket.chat/apps-cli
+
+      - name: Bundle App
+        run: rc-apps package
