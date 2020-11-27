@@ -69,7 +69,9 @@ export class PollApp extends App implements IUIKitInteractionHandler {
     public async executeBlockActionHandler(context: UIKitBlockInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
         const data = context.getInteractionData();
 
-        switch (data.actionId) {
+        const { actionId } = data;
+
+        switch (actionId) {
             case 'vote': {
                 await votePoll({ data, read, persistence, modify });
 

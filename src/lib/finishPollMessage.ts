@@ -1,7 +1,7 @@
 import { IModify, IPersistence, IRead } from '@rocket.chat/apps-engine/definition/accessors';
 import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
 
-import { IPoll } from '../IPoll';
+import { IPoll } from '../definition';
 import { createPollBlocks } from './createPollBlocks';
 import { getPoll } from './getPoll';
 

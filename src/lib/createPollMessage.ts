@@ -1,11 +1,10 @@
 import { IModify, IPersistence, IRead } from '@rocket.chat/apps-engine/definition/accessors';
 import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
-import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import {
     IUIKitViewSubmitIncomingInteraction,
 } from '@rocket.chat/apps-engine/definition/uikit/UIKitIncomingInteractionTypes';
 
-import { IPoll } from '../IPoll';
+import { IModalContext, IPoll } from '../definition';
 import { createPollBlocks } from './createPollBlocks';
 
 export async function createPollMessage(data: IUIKitViewSubmitIncomingInteraction, read: IRead, modify: IModify, persistence: IPersistence, uid: string) {
@@ -15,12 +14,14 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
     } = data.view;
 
     const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, id);
-    const [record] = await read.getPersistenceReader().readByAssociation(association) as Array<{
-        room: IRoom;
-    }>;
+    const [record] = await read.getPersistenceReader().readByAssociation(association) as Array<IModalContext>;
 
     if (!state.poll || !state.poll.question || state.poll.question.trim() === '') {
         throw { question: 'Please type your question here' };
+    }
+
+    if (!record.room) {
+        throw new Error('Invalid room');
     }
 
     const options = Object.entries<any>(state.poll || {})
@@ -58,6 +59,11 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
             .setUsernameAlias((showNames.value && data.user.name) || data.user.username)
             .setRoom(record.room)
             .setText(state.poll.question);
+
+        // if poll created from inside a thread, need to set the thread id
+        if (record.threadId) {
+            builder.setThreadId(record.threadId);
+        }
 
         const poll: IPoll = {
             question: state.poll.question,

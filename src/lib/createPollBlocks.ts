@@ -1,6 +1,6 @@
 import { BlockBuilder, BlockElementType } from '@rocket.chat/apps-engine/definition/uikit';
 
-import { IPoll } from '../IPoll';
+import { IPoll } from '../definition';
 import { buildVoteGraph } from './buildVoteGraph';
 import { buildVoters } from './buildVoters';
 

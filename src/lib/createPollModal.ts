@@ -2,20 +2,21 @@ import { IModify, IPersistence } from '@rocket.chat/apps-engine/definition/acces
 import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
 import { IUIKitModalViewParam } from '@rocket.chat/apps-engine/definition/uikit/UIKitInteractionResponder';
 
+import { IModalContext } from '../definition';
 import { uuid } from './uuid';
 
 export async function createPollModal({ id = '', question, persistence, data, modify, options = 2 }: {
     id?: string,
     question?: string,
     persistence: IPersistence,
-    data,
+    data: IModalContext,
     modify: IModify,
     options?: number,
 }): Promise<IUIKitModalViewParam> {
     const viewId = id || uuid();
 
     const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, viewId);
-    await persistence.createWithAssociation({ room: data.room }, association);
+    await persistence.createWithAssociation(data, association);
 
     const block = modify.getCreator().getBlockBuilder();
     block.addInputBlock({

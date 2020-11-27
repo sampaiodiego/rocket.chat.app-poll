@@ -1,4 +1,4 @@
-import { IPoll, IVoter } from '../IPoll';
+import { IPoll, IVoter } from '../definition';
 
 const filled = '█';
 const empty = ' ';

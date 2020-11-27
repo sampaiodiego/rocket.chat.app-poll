@@ -1,4 +1,4 @@
-import { IVoter } from '../IPoll';
+import { IVoter } from '../definition';
 
 const votersNames = (voters: IVoter['voters'], showNames: boolean) =>
     voters.map(({ name, username }) => showNames ? name : username).join(' ');

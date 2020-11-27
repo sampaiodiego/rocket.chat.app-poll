@@ -1,11 +1,12 @@
 import { IModify, IPersistence, IRead } from '@rocket.chat/apps-engine/definition/accessors';
+import { IUIKitBlockIncomingInteraction } from '@rocket.chat/apps-engine/definition/uikit/UIKitIncomingInteractionTypes';
 
 import { createPollBlocks } from './createPollBlocks';
 import { getPoll } from './getPoll';
 import { storeVote } from './storeVote';
 
 export async function votePoll({ data, read, persistence, modify }: {
-    data,
+    data: IUIKitBlockIncomingInteraction,
     read: IRead,
     persistence: IPersistence,
     modify: IModify,

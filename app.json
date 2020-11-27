@@ -11,5 +11,8 @@
     "name": "Poll",
     "nameSlug": "poll",
     "classFile": "PollApp.ts",
-    "description": "A simple app to create polls on Rocket.Chat. Use the slash command: /poll [Question?]"
+    "description": "A simple app to create polls on Rocket.Chat. Use the slash command: /poll [Question?]",
+    "implements": [
+        "IUIKitInteractionHandler"
+    ]
 }
