@@ -1,5 +1,6 @@
 import { IPoll, IVoter } from '../definition';
 
+
 const filled = '█';
 const empty = ' ';
 const width = 20;

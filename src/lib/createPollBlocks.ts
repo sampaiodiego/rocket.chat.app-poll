@@ -70,4 +70,18 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
             ],
         });
     });
+
+    if (!poll.finished) {
+        block
+        .addActionsBlock({
+            elements: [
+                block.newButtonElement({
+                    actionId: 'addUserChoice',
+                    text: block.newPlainTextObject('Add your own choice'),
+                    // value: String(options + 1),
+                })
+            ]
+        });
+    }
+
 }

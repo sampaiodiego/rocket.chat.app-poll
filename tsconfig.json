@@ -10,8 +10,9 @@
       "noImplicitReturns": true,
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
+      "jsx": "react"
     },
     "include": [
       "**/*.ts"
     ]
-  }
+}

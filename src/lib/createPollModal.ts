@@ -57,6 +57,21 @@ export async function createPollModal({ id = '', question, persistence, data, mo
                         },
                     ],
                 }),
+                block.newStaticSelectElement({
+                    placeholder: block.newPlainTextObject('Allow User Choices'),
+                    actionId: 'userChoice',
+                    initialValue: 'allowUserChoices',
+                    options: [
+                        {
+                            text: block.newPlainTextObject('Allow User Choices'),
+                            value: 'multiple',
+                        },
+                        {
+                            text: block.newPlainTextObject('Don\'t Allow User Choices'),
+                            value: 'single',
+                        },
+                    ],
+                }),
                 block.newButtonElement({
                     actionId: 'addChoice',
                     text: block.newPlainTextObject('Add a choice'),

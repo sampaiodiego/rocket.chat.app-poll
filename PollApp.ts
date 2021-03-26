@@ -17,6 +17,9 @@ import {
 
 import { createPollMessage } from './src/lib/createPollMessage';
 import { createPollModal } from './src/lib/createPollModal';
+import { addUserChoiceModal } from './src/lib/addUserChoiceModal';
+import { updatePollMessage } from './src/lib/updatePollMessage';
+
 import { finishPollMessage } from './src/lib/finishPollMessage';
 import { votePoll } from './src/lib/votePoll';
 import { PollCommand } from './src/PollCommand';
@@ -39,6 +42,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
                 config?: {
                     mode?: string,
                     visibility?: string,
+                    userChoice?: string
                 },
             },
         } = data.view as any;
@@ -90,6 +94,25 @@ export class PollApp extends App implements IUIKitInteractionHandler {
                 const modal = await createPollModal({ id: data.container.id, data, persistence, modify, options: parseInt(String(data.value), 10) });
 
                 return context.getInteractionResponder().updateModalViewResponse(modal);
+            }
+
+            case 'addUserChoice': {
+
+                const modal = await addUserChoiceModal({ id: data.container.id, data, persistence, modify });
+
+                return context.getInteractionResponder().openModalViewResponse(modal);
+
+            }
+
+            case 'updatePoll': {
+
+                const option = "new"
+
+                await updatePollMessage({ data, read, persistence, modify, option });
+
+                return {
+                    success: true,
+                };
             }
 
             case 'finish': {
