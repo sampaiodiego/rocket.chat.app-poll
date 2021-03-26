@@ -1,10 +1,12 @@
 {
     "devDependencies": {
-        "@rocket.chat/apps-engine": "^1.12.0-beta.2731",
+        "@rocket.chat/apps-engine": "^1.23.0",
         "tslint": "^5.10.0",
         "typescript": "^2.9.1"
     },
     "dependencies": {
-        "@types/node": "^12.12.7"
+        "@types/node": "^12.12.7",
+        "react": "^17.0.2",
+        "uikit": "^3.6.18"
     }
 }

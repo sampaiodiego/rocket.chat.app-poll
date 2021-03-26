@@ -35,9 +35,25 @@ To install the using the command line, you have to turn on the setting `Enable d
 
 Then you can clone this repo and then:
 
+Install npm dependencies:
 ```bash
 npm install
-rc-apps deploy
 ```
+To run an app locally, you need to install Rocket.Chat's app engine dependencies first:
+```bash
+sudo npm install -g @rocket.chat/apps-cli
+sudo npm install -g @rocket.chat/apps-engine 
+```
+
+After this you need to start the Rocket.Chat's server on your local machine.
+
+Then run following command from Rocket.Chat Poll App Directory:
+```bash
+rc-apps deploy --url http://localhost:3000 --username admin_username --password admin_password
+```
+Admin username and password can be created  from Rocket.Chat's server.
+
+Now Rocket.Chat Poll App can be used locally.
+
 
 Follow the instructions and when you're done, the app will be installed on your Rocket.Chat server.
