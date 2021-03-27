@@ -1,28 +1,22 @@
-import { IModify, IPersistence, IRead, IModifyUpdater } from '@rocket.chat/apps-engine/definition/accessors';
+import { IModify, IPersistence, IRead } from '@rocket.chat/apps-engine/definition/accessors';
 import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
-import { IUIKitBlockIncomingInteraction } from '@rocket.chat/apps-engine/definition/uikit/UIKitIncomingInteractionTypes';
-import { IPoll } from '../definition';
+import {
+    IUIKitViewSubmitIncomingInteraction,
+} from '@rocket.chat/apps-engine/definition/uikit/UIKitIncomingInteractionTypes';
 
+import { IModalContext, IPoll } from '../definition';
 import { createPollBlocks } from './createPollBlocks';
 import { getPoll } from './getPoll';
-import { storeVote } from './storeVote';
-import { uuid } from './uuid';
 
-export async function updatePollMessage({ data, read, persistence, modify, option }: {
-    data: IUIKitBlockIncomingInteraction,
-    read: IRead,
-    persistence: IPersistence,
-    modify: IModify,
-    option: string
-}) {
+export async function updatePollMessage(data: IUIKitViewSubmitIncomingInteraction, read: IRead, modify: IModify, persistence: IPersistence, uid: string) {
+    const { view: { id } } = data;
+    const { state }: {
+        state?: any;
+    } = data.view;
+    
+    const poll = await getPoll(String(state.msgId.msgId), read);
+    console.log(state.msgId.msgId);
 
-    if (!data.message) {
-        return {
-            success: true,
-        };
-    }
-
-    const poll = await getPoll(String(data.message.id), read);
     if (!poll) {
         throw new Error('no such poll');
     }
@@ -32,7 +26,7 @@ export async function updatePollMessage({ data, read, persistence, modify, optio
     }
 
 
-    const message = await modify.getUpdater().message(data.message.id as string, data.user);
+    const message = await modify.getUpdater().message(state.msgId.msgId as string, data.user);
     message.setEditor(message.getSender());
     
     const block = modify.getCreator().getBlockBuilder();
@@ -40,7 +34,7 @@ export async function updatePollMessage({ data, read, persistence, modify, optio
     const showNames = await read.getEnvironmentReader().getSettings().getById('use-user-name');
 
     poll.votes.push({ quantity: 0, voters: [] });
-    poll.options.push(option)
+    poll.options.push(state.userChoice.addUserOption)
 
     createPollBlocks(block, poll.question, poll.options, poll, showNames.value);
 

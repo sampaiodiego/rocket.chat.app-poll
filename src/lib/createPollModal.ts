@@ -64,11 +64,11 @@ export async function createPollModal({ id = '', question, persistence, data, mo
                     options: [
                         {
                             text: block.newPlainTextObject('Allow User Choices'),
-                            value: 'multiple',
+                            value: 'allowUserChoices',
                         },
                         {
                             text: block.newPlainTextObject('Don\'t Allow User Choices'),
-                            value: 'single',
+                            value: 'dontallowUserChoices',
                         },
                     ],
                 }),

@@ -72,8 +72,8 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
             ],
         });
     });
-
-    if (!poll.finished) {
+    console.log(poll.allowUserChoice);
+    if (!poll.finished && poll.allowUserChoice) {
         block
         .addActionsBlock({
             elements: [

@@ -18,11 +18,11 @@ import {
 import { createPollMessage } from './src/lib/createPollMessage';
 import { createPollModal } from './src/lib/createPollModal';
 import { addUserChoiceModal } from './src/lib/addUserChoiceModal';
-import { updatePollMessage } from './src/lib/updatePollMessage';
 
 import { finishPollMessage } from './src/lib/finishPollMessage';
 import { votePoll } from './src/lib/votePoll';
 import { PollCommand } from './src/PollCommand';
+import { updatePollMessage } from './src/lib/updatePollMessage';
 
 export class PollApp extends App implements IUIKitInteractionHandler {
 
@@ -68,7 +68,9 @@ export class PollApp extends App implements IUIKitInteractionHandler {
             return {
                 success: true,
             };
-        } else{
+                    }
+        
+        else{
             const { state }: {
                 state: {
                     userChoice: {
@@ -105,7 +107,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
     public async executeBlockActionHandler(context: UIKitBlockInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
         const data = context.getInteractionData();
 
-        const { actionId } = data;
+        const { actionId, message } = data;
 
         switch (actionId) {
             case 'vote': {
@@ -130,10 +132,14 @@ export class PollApp extends App implements IUIKitInteractionHandler {
             }
 
             case 'addUserChoice': {
-
-                const modal = await addUserChoiceModal({ data, persistence, modify });
-
+                if(message){
+                    const msgId = message.id;
+                
+                const modal = await addUserChoiceModal({ msgId ,data, persistence, modify });
+                
                 return context.getInteractionResponder().openModalViewResponse(modal);
+                
+            }
                 // const option = "new"
 
                 // await updatePollMessage({ data, read, persistence, modify, option });
@@ -141,20 +147,20 @@ export class PollApp extends App implements IUIKitInteractionHandler {
                 // return {
                 //     success: true,
                 // };
+                
             }
 
-            case 'updatePoll': {
+            // case 'updatePoll': {
 
-                // console.log(data);
 
-                const option = "new"
+            //     const option = "new"
 
-                await updatePollMessage({ data, read, persistence, modify, option });
+            //     await updatePollMessage({ data, read, persistence, modify, option });
 
-                return {
-                    success: true,
-                };
-            }
+            //     return {
+            //         success: true,
+            //     };
+            // }
 
             case 'finish': {
                 try {
