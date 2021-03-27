@@ -1,6 +1,7 @@
 import { IModify, IPersistence, IRead, IModifyUpdater } from '@rocket.chat/apps-engine/definition/accessors';
 import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
 import { IUIKitBlockIncomingInteraction } from '@rocket.chat/apps-engine/definition/uikit/UIKitIncomingInteractionTypes';
+import { IPoll } from '../definition';
 
 import { createPollBlocks } from './createPollBlocks';
 import { getPoll } from './getPoll';
@@ -34,15 +35,21 @@ export async function updatePollMessage({ data, read, persistence, modify, optio
 
     const message = await modify.getUpdater().message(data.message.id as string, data.user);
     message.setEditor(message.getSender());
-
+    
     const block = modify.getCreator().getBlockBuilder();
 
     const showNames = await read.getEnvironmentReader().getSettings().getById('use-user-name');
 
-    console.log(poll.options.concat(option));
-    createPollBlocks(block, poll.question, poll.options.concat(option), poll, showNames.value);
+    poll.votes.push({ quantity: 0, voters: [] });
+    poll.options.push(option)
+
+    createPollBlocks(block, poll.question, poll.options, poll, showNames.value);
 
     message.setBlocks(block);
+
+    const pollAssociation = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, poll.msgId);
+
+    await persistence.updateByAssociation(pollAssociation, poll);
 
     return modify.getUpdater().finish(message);
 }

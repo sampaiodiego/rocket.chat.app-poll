@@ -18,6 +18,7 @@ export async function votePoll({ data, read, persistence, modify }: {
     }
 
     const poll = await getPoll(String(data.message.id), read);
+
     if (!poll) {
         throw new Error('no such poll');
     }

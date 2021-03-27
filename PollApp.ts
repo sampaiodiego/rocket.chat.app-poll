@@ -32,7 +32,6 @@ export class PollApp extends App implements IUIKitInteractionHandler {
 
     public async executeViewSubmitHandler(context: UIKitViewSubmitInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
         const data = context.getInteractionData();
-
         const { state }: {
             state: {
                 poll: {
@@ -91,17 +90,24 @@ export class PollApp extends App implements IUIKitInteractionHandler {
             }
 
             case 'addChoice': {
+                
                 const modal = await createPollModal({ id: data.container.id, data, persistence, modify, options: parseInt(String(data.value), 10) });
 
                 return context.getInteractionResponder().updateModalViewResponse(modal);
             }
 
             case 'addUserChoice': {
-
-                const modal = await addUserChoiceModal({ id: data.container.id, data, persistence, modify });
+               
+                const modal = await addUserChoiceModal({ data, persistence, modify });
 
                 return context.getInteractionResponder().openModalViewResponse(modal);
+                // const option = "new"
 
+                // await updatePollMessage({ data, read, persistence, modify, option });
+
+                // return {
+                //     success: true,
+                // };
             }
 
             case 'updatePoll': {

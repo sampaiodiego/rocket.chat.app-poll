@@ -5,12 +5,11 @@ import { IUIKitModalViewParam } from '@rocket.chat/apps-engine/definition/uikit/
 import { IModalContext } from '../definition';
 import { uuid } from './uuid';
 
-export async function addUserChoiceModal({ id = '', persistence, data, modify, options }: {
+export async function addUserChoiceModal({ id = '', persistence, data, modify }: {
     id?: string,
     persistence: IPersistence,
     data: IModalContext,
     modify: IModify,
-    options?: number,
 }): Promise<IUIKitModalViewParam> {
     const viewId = id || uuid();
 
@@ -20,10 +19,10 @@ export async function addUserChoiceModal({ id = '', persistence, data, modify, o
     const block = modify.getCreator().getBlockBuilder();
 
     block.addInputBlock({
-        blockId: 'poll',
+        blockId: 'userChoice',
         optional: true,
         element: block.newPlainTextInputElement({
-            actionId: `option-${options}`,
+            actionId: `addUserOption`,
             placeholder: block.newPlainTextObject('Insert an option'),
         }),
         label: block.newPlainTextObject(''),
