@@ -31,77 +31,89 @@ export class PollApp extends App implements IUIKitInteractionHandler {
     }
 
     public async executeViewSubmitHandler(context: UIKitViewSubmitInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
-        const data = context.getInteractionData();
-        if(data.view.blocks[0].blockId !== "userChoice"){
-            const { state }: {
-                state: {
-                    poll: {
-                        question: string,
-                        [option: string]: string,
-                    },
-                    config?: {
-                        mode?: string,
-                        visibility?: string,
-                        userChoice?: string
-                    },
-                },
-            } = data.view as any;
-    
-            if (!state) {
-                return context.getInteractionResponder().viewErrorResponse({
-                    viewId: data.view.id,
-                    errors: {
-                        question: 'Error creating poll',
-                    },
-                });
-            }
-    
-            try {
-                await createPollMessage(data, read, modify, persistence, data.user.id);
-            } catch (err) {
-                return context.getInteractionResponder().viewErrorResponse({
-                    viewId: data.view.id,
-                    errors: err,
-                });
-            }
-    
-            return {
-                success: true,
-            };
-                    }
         
-        else{
-            const { state }: {
-                state: {
-                    userChoice: {
-                        addUserOption: string,
-                    }
-                }
-            } = data.view as any;
+        const data = context.getInteractionData();
 
-            if (!state) {
-                return context.getInteractionResponder().viewErrorResponse({
-                    viewId: data.view.id,
-                    errors: {
-                        question: 'Error Adding Option',
+        const {title} = data.view;
+
+
+        switch (title.text) {
+
+            case 'Create a poll': {
+
+                const { state }: {
+                    state: {
+                        poll: {
+                            question: string,
+                            [option: string]: string,
+                        },
+                        config?: {
+                            mode?: string,
+                            visibility?: string,
+                            userChoice?: string
+                        },
                     },
-                });
+                } = data.view as any;
+        
+                if (!state) {
+                    return context.getInteractionResponder().viewErrorResponse({
+                        viewId: data.view.id,
+                        errors: {
+                            question: 'Error creating poll',
+                        },
+                    });
+                }
+        
+                try {
+                    await createPollMessage(data, read, modify, persistence, data.user.id);
+                } catch (err) {
+                    return context.getInteractionResponder().viewErrorResponse({
+                        viewId: data.view.id,
+                        errors: err,
+                    });
+                }
+        
+                return {
+                    success: true,
+                };
             }
 
-            try {
-                await updatePollMessage(data, read, modify, persistence, data.user.id);
-            } catch (err) {
-                return context.getInteractionResponder().viewErrorResponse({
-                    viewId: data.view.id,
-                    errors: err,
-                });
-            }
+            case 'Insert Your Own Option': {
+                const { state }: {
+                    state: {
+                        userChoice: {
+                            addUserOption: string,
+                        }
+                    }
+                } = data.view as any;
+    
+                if (!state) {
+                    return context.getInteractionResponder().viewErrorResponse({
+                        viewId: data.view.id,
+                        errors: {
+                            question: 'Error Adding Option',
+                        },
+                    });
+                }
+    
+                try {
 
-            return {
-                success: true,
-            };
+                    await updatePollMessage(data, read, modify, persistence, data.user.id);
+                } catch (err) {
+                    return context.getInteractionResponder().viewErrorResponse({
+                        viewId: data.view.id,
+                        errors: err,
+                    });
+                }
+    
+                return {
+                    success: true,
+                };
+            }
         }
-
+        return {
+            success: true,
+        };
     }
 
     public async executeBlockActionHandler(context: UIKitBlockInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
@@ -132,21 +144,12 @@ export class PollApp extends App implements IUIKitInteractionHandler {
             }
 
             case 'addUserChoice': {
+                
                 if(message){
                     const msgId = message.id;
-                
-                const modal = await addUserChoiceModal({ msgId ,data, persistence, modify });
-                
-                return context.getInteractionResponder().openModalViewResponse(modal);
-                
-            }
-                // const option = "new"
-
-                // await updatePollMessage({ data, read, persistence, modify, option });
-
-                // return {
-                //     success: true,
-                // };
+                    const modal = await addUserChoiceModal({ msgId ,data, persistence, modify });
+                    return context.getInteractionResponder().openModalViewResponse(modal);
+                }
                 
             }
 

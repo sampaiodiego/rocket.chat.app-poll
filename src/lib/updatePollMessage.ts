@@ -13,9 +13,10 @@ export async function updatePollMessage(data: IUIKitViewSubmitIncomingInteractio
     const { state }: {
         state?: any;
     } = data.view;
-    
-    const poll = await getPoll(String(state.msgId.msgId), read);
-    console.log(state.msgId.msgId);
+
+    const msgId = data.view.blocks[1].blockId;
+
+    const poll = await getPoll(String(msgId), read);
 
     if (!poll) {
         throw new Error('no such poll');
@@ -26,7 +27,7 @@ export async function updatePollMessage(data: IUIKitViewSubmitIncomingInteractio
     }
 
 
-    const message = await modify.getUpdater().message(state.msgId.msgId as string, data.user);
+    const message = await modify.getUpdater().message(msgId as string, data.user);
     message.setEditor(message.getSender());
     
     const block = modify.getCreator().getBlockBuilder();
@@ -43,6 +44,7 @@ export async function updatePollMessage(data: IUIKitViewSubmitIncomingInteractio
     const pollAssociation = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, poll.msgId);
 
     await persistence.updateByAssociation(pollAssociation, poll);
+
 
     return modify.getUpdater().finish(message);
 }
