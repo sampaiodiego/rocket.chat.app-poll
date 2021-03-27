@@ -37,6 +37,7 @@ export async function addUserChoiceModal({ id = '', msgId = '',persistence, data
     //     }),
     //     label: block.newPlainTextObject(''),
     // });
+    
     block.addContextBlock({
         blockId: msgId,
         elements: [

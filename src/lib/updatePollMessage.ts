@@ -4,7 +4,6 @@ import {
     IUIKitViewSubmitIncomingInteraction,
 } from '@rocket.chat/apps-engine/definition/uikit/UIKitIncomingInteractionTypes';
 
-import { IModalContext, IPoll } from '../definition';
 import { createPollBlocks } from './createPollBlocks';
 import { getPoll } from './getPoll';
 
@@ -44,7 +43,6 @@ export async function updatePollMessage(data: IUIKitViewSubmitIncomingInteractio
     const pollAssociation = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, poll.msgId);
 
     await persistence.updateByAssociation(pollAssociation, poll);
-
 
     return modify.getUpdater().finish(message);
 }

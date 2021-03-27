@@ -97,7 +97,6 @@ export class PollApp extends App implements IUIKitInteractionHandler {
                 }
     
                 try {
-
                     await updatePollMessage(data, read, modify, persistence, data.user.id);
                 } catch (err) {
                     return context.getInteractionResponder().viewErrorResponse({
@@ -146,9 +145,11 @@ export class PollApp extends App implements IUIKitInteractionHandler {
             case 'addUserChoice': {
                 
                 if(message){
+
                     const msgId = message.id;
                     const modal = await addUserChoiceModal({ msgId ,data, persistence, modify });
                     return context.getInteractionResponder().openModalViewResponse(modal);
+        
                 }
                 
             }
