@@ -6,6 +6,7 @@ import {
 
 import { createPollBlocks } from './createPollBlocks';
 import { getPoll } from './getPoll';
+import { storeVote } from './storeVote';
 
 export async function updatePollMessage(data: IUIKitViewSubmitIncomingInteraction, read: IRead, modify: IModify, persistence: IPersistence, uid: string) {
     const { view: { id } } = data;
@@ -16,7 +17,6 @@ export async function updatePollMessage(data: IUIKitViewSubmitIncomingInteractio
     const msgId = data.view.blocks[1].blockId;
 
     const poll = await getPoll(String(msgId), read);
-
     if (!poll) {
         throw new Error('no such poll');
     }

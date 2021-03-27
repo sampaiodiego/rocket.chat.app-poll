@@ -26,7 +26,7 @@ export async function votePoll({ data, read, persistence, modify }: {
     if (poll.finished) {
         throw new Error('poll is already finished');
     }
-    console.log(data);
+
     await storeVote(poll, parseInt(String(data.value), 10), data.user, { persis: persistence });
 
     const message = await modify.getUpdater().message(data.message.id as string, data.user);
