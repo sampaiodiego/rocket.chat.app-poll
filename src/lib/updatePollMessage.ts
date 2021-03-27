@@ -6,7 +6,6 @@ import {
 
 import { createPollBlocks } from './createPollBlocks';
 import { getPoll } from './getPoll';
-import { storeVote } from './storeVote';
 
 export async function updatePollMessage(data: IUIKitViewSubmitIncomingInteraction, read: IRead, modify: IModify, persistence: IPersistence, uid: string) {
     const { view: { id } } = data;

@@ -28,15 +28,6 @@ export async function addUserChoiceModal({ id = '', msgId = '',persistence, data
         }),
         label: block.newPlainTextObject(''),
     });
-
-    // block.addInputBlock({
-    //     blockId: 'msgId',
-    //     element: block.newPlainTextInputElement({
-    //         actionId: `msgId`,
-    //         initialValue: msgId,
-    //     }),
-    //     label: block.newPlainTextObject(''),
-    // });
     
     block.addContextBlock({
         blockId: msgId,

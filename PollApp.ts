@@ -154,18 +154,6 @@ export class PollApp extends App implements IUIKitInteractionHandler {
                 
             }
 
-            // case 'updatePoll': {
-
-
-            //     const option = "new"
-
-            //     await updatePollMessage({ data, read, persistence, modify, option });
-
-            //     return {
-            //         success: true,
-            //     };
-            // }
-
             case 'finish': {
                 try {
                     await finishPollMessage({ data, read, persistence, modify });
