@@ -31,7 +31,6 @@ export async function updatePollMessage({ data, read, persistence, modify, optio
         throw new Error('poll is already finished');
     }
 
-    // await storeVote(poll, parseInt(String(data.value), 10), data.user, { persis: persistence });
 
     const message = await modify.getUpdater().message(data.message.id as string, data.user);
     message.setEditor(message.getSender());

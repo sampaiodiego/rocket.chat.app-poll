@@ -42,12 +42,12 @@ export async function addUserChoiceModal({ id = '', persistence, data, modify }:
     return {
         id: viewId,
         title: block.newPlainTextObject('Insert Your Own Option'),
-        // submit: block.newButtonElement({
-        //     text: block.newPlainTextObject('Add'),
-        // }),
-        // close: block.newButtonElement({
-        //     text: block.newPlainTextObject('Dismiss'),
-        // }),
+        submit: block.newButtonElement({
+            text: block.newPlainTextObject('Add'),
+        }),
+        close: block.newButtonElement({
+            text: block.newPlainTextObject('Dismiss'),
+        }),
         blocks: block.getBlocks(),
     };
 }

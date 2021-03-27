@@ -32,41 +32,74 @@ export class PollApp extends App implements IUIKitInteractionHandler {
 
     public async executeViewSubmitHandler(context: UIKitViewSubmitInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
         const data = context.getInteractionData();
-        const { state }: {
-            state: {
-                poll: {
-                    question: string,
-                    [option: string]: string,
+        if(data.view.blocks[0].blockId !== "userChoice"){
+            const { state }: {
+                state: {
+                    poll: {
+                        question: string,
+                        [option: string]: string,
+                    },
+                    config?: {
+                        mode?: string,
+                        visibility?: string,
+                        userChoice?: string
+                    },
                 },
-                config?: {
-                    mode?: string,
-                    visibility?: string,
-                    userChoice?: string
-                },
-            },
-        } = data.view as any;
+            } = data.view as any;
+    
+            if (!state) {
+                return context.getInteractionResponder().viewErrorResponse({
+                    viewId: data.view.id,
+                    errors: {
+                        question: 'Error creating poll',
+                    },
+                });
+            }
+    
+            try {
+                await createPollMessage(data, read, modify, persistence, data.user.id);
+            } catch (err) {
+                return context.getInteractionResponder().viewErrorResponse({
+                    viewId: data.view.id,
+                    errors: err,
+                });
+            }
+    
+            return {
+                success: true,
+            };
+        } else{
+            const { state }: {
+                state: {
+                    userChoice: {
+                        addUserOption: string,
+                    }
+                }
+            } = data.view as any;
 
-        if (!state) {
-            return context.getInteractionResponder().viewErrorResponse({
-                viewId: data.view.id,
-                errors: {
-                    question: 'Error creating poll',
-                },
-            });
+            if (!state) {
+                return context.getInteractionResponder().viewErrorResponse({
+                    viewId: data.view.id,
+                    errors: {
+                        question: 'Error Adding Option',
+                    },
+                });
+            }
+
+            try {
+                await updatePollMessage(data, read, modify, persistence, data.user.id);
+            } catch (err) {
+                return context.getInteractionResponder().viewErrorResponse({
+                    viewId: data.view.id,
+                    errors: err,
+                });
+            }
+
+            return {
+                success: true,
+            };
         }
 
-        try {
-            await createPollMessage(data, read, modify, persistence, data.user.id);
-        } catch (err) {
-            return context.getInteractionResponder().viewErrorResponse({
-                viewId: data.view.id,
-                errors: err,
-            });
-        }
-
-        return {
-            success: true,
-        };
     }
 
     public async executeBlockActionHandler(context: UIKitBlockInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
@@ -97,7 +130,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
             }
 
             case 'addUserChoice': {
-               
+
                 const modal = await addUserChoiceModal({ data, persistence, modify });
 
                 return context.getInteractionResponder().openModalViewResponse(modal);
@@ -111,6 +144,8 @@ export class PollApp extends App implements IUIKitInteractionHandler {
             }
 
             case 'updatePoll': {
+
+                // console.log(data);
 
                 const option = "new"
 
