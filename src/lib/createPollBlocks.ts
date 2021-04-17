@@ -5,6 +5,7 @@ import { buildVoteGraph } from './buildVoteGraph';
 import { buildVoters } from './buildVoters';
 
 export function createPollBlocks(block: BlockBuilder, question: string, options: Array<any>, poll: IPoll, showNames: boolean) {
+
     block.addSectionBlock({
         text: block.newPlainTextObject(question),
         ...!poll.finished && {
@@ -32,6 +33,7 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
     block.addDividerBlock();
 
     options.forEach((option, index) => {
+        
         block.addSectionBlock({
             text: block.newPlainTextObject(option),
             ...!poll.finished && {
@@ -43,7 +45,7 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
                 },
             },
         });
-
+        
         if (!poll.votes[index]) {
             return;
         }
@@ -70,4 +72,18 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
             ],
         });
     });
+
+    if (!poll.finished && poll.allowUserChoice) {
+        block
+        .addActionsBlock({
+            elements: [
+                block.newButtonElement({
+                    actionId: 'addUserChoice',
+                    text: block.newPlainTextObject('Add your own choice'),
+                    // value: String(options + 1),
+                })
+            ]
+        });
+    }
+
 }

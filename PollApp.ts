@@ -17,9 +17,12 @@ import {
 
 import { createPollMessage } from './src/lib/createPollMessage';
 import { createPollModal } from './src/lib/createPollModal';
+import { addUserChoiceModal } from './src/lib/addUserChoiceModal';
+
 import { finishPollMessage } from './src/lib/finishPollMessage';
 import { votePoll } from './src/lib/votePoll';
 import { PollCommand } from './src/PollCommand';
+import { updatePollMessage } from './src/lib/updatePollMessage';
 
 export class PollApp extends App implements IUIKitInteractionHandler {
 
@@ -28,39 +31,85 @@ export class PollApp extends App implements IUIKitInteractionHandler {
     }
 
     public async executeViewSubmitHandler(context: UIKitViewSubmitInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
+        
         const data = context.getInteractionData();
 
-        const { state }: {
-            state: {
-                poll: {
-                    question: string,
-                    [option: string]: string,
-                },
-                config?: {
-                    mode?: string,
-                    visibility?: string,
-                },
-            },
-        } = data.view as any;
+        const {title} = data.view;
 
-        if (!state) {
-            return context.getInteractionResponder().viewErrorResponse({
-                viewId: data.view.id,
-                errors: {
-                    question: 'Error creating poll',
-                },
-            });
+
+        switch (title.text) {
+
+            case 'Create a poll': {
+
+                const { state }: {
+                    state: {
+                        poll: {
+                            question: string,
+                            [option: string]: string,
+                        },
+                        config?: {
+                            mode?: string,
+                            visibility?: string,
+                            userChoice?: string
+                        },
+                    },
+                } = data.view as any;
+        
+                if (!state) {
+                    return context.getInteractionResponder().viewErrorResponse({
+                        viewId: data.view.id,
+                        errors: {
+                            question: 'Error creating poll',
+                        },
+                    });
+                }
+        
+                try {
+                    await createPollMessage(data, read, modify, persistence, data.user.id);
+                } catch (err) {
+                    return context.getInteractionResponder().viewErrorResponse({
+                        viewId: data.view.id,
+                        errors: err,
+                    });
+                }
+        
+                return {
+                    success: true,
+                };
+            }
+
+            case 'Insert Your Own Option': {
+                const { state }: {
+                    state: {
+                        userChoice: {
+                            addUserOption: string,
+                        }
+                    }
+                } = data.view as any;
+    
+                if (!state) {
+                    return context.getInteractionResponder().viewErrorResponse({
+                        viewId: data.view.id,
+                        errors: {
+                            question: 'Error Adding Option',
+                        },
+                    });
+                }
+    
+                try {
+                    await updatePollMessage(data, read, modify, persistence, data.user.id);
+                } catch (err) {
+                    return context.getInteractionResponder().viewErrorResponse({
+                        viewId: data.view.id,
+                        errors: err,
+                    });
+                }
+    
+                return {
+                    success: true,
+                };
+            }
         }
-
-        try {
-            await createPollMessage(data, read, modify, persistence, data.user.id);
-        } catch (err) {
-            return context.getInteractionResponder().viewErrorResponse({
-                viewId: data.view.id,
-                errors: err,
-            });
-        }
-
         return {
             success: true,
         };
@@ -69,7 +118,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
     public async executeBlockActionHandler(context: UIKitBlockInteractionContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify) {
         const data = context.getInteractionData();
 
-        const { actionId } = data;
+        const { actionId, message } = data;
 
         switch (actionId) {
             case 'vote': {
@@ -87,9 +136,22 @@ export class PollApp extends App implements IUIKitInteractionHandler {
             }
 
             case 'addChoice': {
+                
                 const modal = await createPollModal({ id: data.container.id, data, persistence, modify, options: parseInt(String(data.value), 10) });
 
                 return context.getInteractionResponder().updateModalViewResponse(modal);
+            }
+
+            case 'addUserChoice': {
+                
+                if(message){
+
+                    const msgId = message.id;
+                    const modal = await addUserChoiceModal({ msgId ,data, persistence, modify });
+                    return context.getInteractionResponder().openModalViewResponse(modal);
+        
+                }
+                
             }
 
             case 'finish': {

@@ -51,7 +51,7 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
 
     try {
         const { config = { mode: 'multiple', visibility: 'open' } } = state;
-        const { mode = 'multiple', visibility = 'open' } = config;
+        const { mode = 'multiple', visibility = 'open', userChoice = 'allowUserChoices' } = config;
 
         const showNames = await read.getEnvironmentReader().getSettings().getById('use-user-name');
 
@@ -72,6 +72,7 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
             options,
             totalVotes: 0,
             votes: options.map(() => ({ quantity: 0, voters: [] })),
+            allowUserChoice: userChoice === 'allowUserChoices',
             confidential: visibility === 'confidential',
             singleChoice: mode === 'single',
         };
