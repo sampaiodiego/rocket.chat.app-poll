@@ -48,11 +48,9 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
             return;
         }
 
-
         if (!poll.showResults && !poll.finished) {
             return;
         }
-
 
         const graph = buildVoteGraph(poll.votes[index], poll.totalVotes);
         block.addContextBlock({
