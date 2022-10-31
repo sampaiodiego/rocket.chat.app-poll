@@ -39,6 +39,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
                 config?: {
                     mode?: string,
                     visibility?: string,
+                    showResults?: string,
                 },
             },
         } = data.view as any;

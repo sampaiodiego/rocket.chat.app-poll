@@ -17,6 +17,7 @@ export interface IPoll {
     votes: Array<IVoter>;
     finished?: boolean;
     confidential?: boolean;
+    showResults?: boolean;
     singleChoice?: boolean;
 }
 
