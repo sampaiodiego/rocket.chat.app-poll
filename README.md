@@ -4,8 +4,15 @@
 
 Poll Version | Minimum Rocket.Chat Version
 ------------ | -------------
+v2.x+ | **3.0.0**
 v1.x | **0.74.1**
-v2.x | **3.0.0**
+
+## Features
+
+- As many options as you want
+- Single/multiple choices
+- Confidential votes (don't show who voted for what)
+- Hide results until the poll is finished
 
 ## Installing
 
