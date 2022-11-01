@@ -87,7 +87,7 @@ export async function createPollModal({ id = '', question, persistence, data, mo
                             value: 'always',
                         },
                         {
-                            text: block.newPlainTextObject('Show result when poll is finished'),
+                            text: block.newPlainTextObject('Show results only after finished'),
                             value: 'finished',
                         },
                     ],
