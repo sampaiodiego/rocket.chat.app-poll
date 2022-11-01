@@ -29,9 +29,11 @@ The following poll will be created:
 
 ## Contributing
 
-You'll need to set up the Rocket.Chat Apps dev environment, please see https://rocket.chat/docs/developer-guides/developing-apps/getting-started/
+You'll need to set up the Rocket.Chat Apps dev environment, please see https://developer.rocket.chat/apps-engine/getting-started
 
 To install the using the command line, you have to turn on the setting `Enable development mode` on the Rocket.Chat server under `Admin > General > Apps`.
+
+Change the values from [.rcappsconfig](.rcappsconfig) to reflect your dev environment.
 
 Then you can clone this repo and then:
 
