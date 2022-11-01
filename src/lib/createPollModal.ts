@@ -77,6 +77,21 @@ export async function createPollModal({ id = '', question, persistence, data, mo
                         },
                     ],
                 }),
+                block.newStaticSelectElement({
+                    placeholder: block.newPlainTextObject('Always shows results'),
+                    actionId: 'showResults',
+                    initialValue: 'always',
+                    options: [
+                        {
+                            text: block.newPlainTextObject('Always shows results'),
+                            value: 'always',
+                        },
+                        {
+                            text: block.newPlainTextObject('Show results only after finished'),
+                            value: 'finished',
+                        },
+                    ],
+                }),
             ],
         });
 
