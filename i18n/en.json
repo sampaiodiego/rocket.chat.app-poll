@@ -1,5 +1,5 @@
 {
     "cmd_description": "Create a simple poll",
     "params_example": "Type your question or fill it up on the form.",
-    "create_poll_button": "📊 Create a poll"
+    "create_poll_button": "📊 Poll"
 }
