@@ -1,0 +1,20 @@
+PollApp.ts
+  s_ba0b41e7afbc0f::t_cb04de607ed59a 169
+  s_ba0b41e7afbc0f::t_207cffa6cb0bee 140
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "aa4679e72ee4df6be0eb8eb12fb34ce1ddbb12b2",
+  "prompts": {},
+  "sessions": {
+    "s_ba0b41e7afbc0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a7edf513-8730-4b39-984b-03e1e84458ff",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Diego Sampaio <chinello@gmail.com>"
+    }
+  }
+}
