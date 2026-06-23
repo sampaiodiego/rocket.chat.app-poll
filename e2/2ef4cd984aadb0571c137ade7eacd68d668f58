@@ -1,0 +1,21 @@
+.github/workflows/main.yml
+  s_ff48b25cd4de18::t_30fd28143543c9 16
+  s_ff48b25cd4de18::t_d50364173516d8 19
+  s_ff48b25cd4de18::t_64cbbf454675fc 21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "e22ef4cd984aadb0571c137ade7eacd68d668f58",
+  "prompts": {},
+  "sessions": {
+    "s_ff48b25cd4de18": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f61d94e8-3148-4658-b5c7-4951cd4364f3",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Diego Sampaio <chinello@gmail.com>"
+    }
+  }
+}
