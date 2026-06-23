@@ -1,0 +1,19 @@
+src/lib/createPollMessage.ts
+  s_1b723a0ef08976::t_50d6407c050370 105
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "586f460b092d7ed5dfa41d0a6b53ee179248130d",
+  "prompts": {},
+  "sessions": {
+    "s_1b723a0ef08976": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e377b62-a33a-4835-8eec-319ac14faf8f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Diego Sampaio <chinello@gmail.com>"
+    }
+  }
+}
