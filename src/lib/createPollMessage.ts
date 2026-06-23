@@ -6,6 +6,7 @@ import {
 
 import { IModalContext, IPoll } from '../definition';
 import { createPollBlocks } from './createPollBlocks';
+import { parseCloseSchedule } from './parseCloseSchedule';
 
 export async function createPollMessage(data: IUIKitViewSubmitIncomingInteraction, read: IRead, modify: IModify, persistence: IPersistence, uid: string) {
     const { view: { id } } = data;
@@ -50,8 +51,12 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
     }
 
     try {
-        const { config = { mode: 'multiple', visibility: 'open', showResults: 'always' } } = state;
+        const { config = { mode: 'multiple', visibility: 'open', showResults: 'always' }, schedule = {} } = state;
         const { mode = 'multiple', visibility = 'open', showResults = 'always' } = config;
+        const { duration = 'off', closeAt } = schedule;
+
+        // Throws a field-error object on invalid/past input, surfaced via viewErrorResponse.
+        const closesAt = parseCloseSchedule(duration, closeAt);
 
         const showNames = await read.getEnvironmentReader().getSettings().getById('use-user-name');
 
@@ -75,6 +80,7 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
             confidential: visibility === 'confidential',
             singleChoice: mode === 'single',
             showResults: showResults === 'always',
+            closesAt,
         };
 
         const block = modify.getCreator().getBlockBuilder();
@@ -88,6 +94,19 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
         const pollAssociation = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, messageId);
 
         await persistence.createWithAssociation(poll, pollAssociation);
+
+        if (closesAt) {
+            const jobId = await modify.getScheduler().scheduleOnce({
+                id: 'close-poll',
+                when: new Date(closesAt),
+                data: { msgId: messageId },
+            });
+
+            if (jobId) {
+                poll.closeJobId = jobId;
+                await persistence.updateByAssociation(pollAssociation, poll);
+            }
+        }
     } catch (e) {
         throw e;
     }

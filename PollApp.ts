@@ -15,6 +15,7 @@ import {
     UIKitViewSubmitInteractionContext,
 } from '@rocket.chat/apps-engine/definition/uikit';
 
+import { closePollProcessor } from './src/lib/closePollProcessor';
 import { createPollMessage } from './src/lib/createPollMessage';
 import { createPollModal } from './src/lib/createPollModal';
 import { finishPollMessage } from './src/lib/finishPollMessage';
@@ -82,13 +83,19 @@ export class PollApp extends App implements IUIKitInteractionHandler {
             }
 
             case 'create': {
-                const modal = await createPollModal({ data, persistence, modify });
+                const modal = await createPollModal({ data, read, persistence, modify });
 
                 return context.getInteractionResponder().openModalViewResponse(modal);
             }
 
             case 'addChoice': {
-                const modal = await createPollModal({ id: data.container.id, data, persistence, modify, options: parseInt(String(data.value), 10) });
+                const modal = await createPollModal({ id: data.container.id, data, read, persistence, modify, options: parseInt(String(data.value), 10) });
+
+                return context.getInteractionResponder().updateModalViewResponse(modal);
+            }
+
+            case 'duration': {
+                const modal = await createPollModal({ id: data.container.id, data, read, persistence, modify, duration: String(data.value) });
 
                 return context.getInteractionResponder().updateModalViewResponse(modal);
             }
@@ -127,6 +134,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
 
     public async initialize(configuration: IConfigurationExtend): Promise<void> {
         await configuration.slashCommands.provideSlashCommand(new PollCommand());
+        await configuration.scheduler.registerProcessors([closePollProcessor]);
         await configuration.settings.provideSetting({
             id : 'use-user-name',
             i18nLabel: 'Use name attribute to display voters, instead of username',

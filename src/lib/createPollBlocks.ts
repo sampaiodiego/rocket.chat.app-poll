@@ -4,6 +4,15 @@ import { IPoll } from '../definition';
 import { buildVoteGraph } from './buildVoteGraph';
 import { buildVoters } from './buildVoters';
 
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+// Compact UTC time, e.g. "23 Jun 2026, 21:44".
+function formatCloseTime(closesAt: number): string {
+    const date = new Date(closesAt);
+    const pad = (value: number) => String(value).padStart(2, '0');
+    return `${date.getUTCDate()} ${MONTHS[date.getUTCMonth()]} ${date.getUTCFullYear()}, ${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}`;
+}
+
 export function createPollBlocks(block: BlockBuilder, question: string, options: Array<any>, poll: IPoll, showNames: boolean) {
     block.addSectionBlock({
         text: block.newPlainTextObject(question),
@@ -25,6 +34,12 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
         block.addContextBlock({
             elements: [
                 block.newMarkdownTextObject(`The poll has been finished at ${new Date().toUTCString()}`),
+            ],
+        });
+    } else if (poll.closesAt) {
+        block.addContextBlock({
+            elements: [
+                block.newMarkdownTextObject(`⏰ Closes ${formatCloseTime(poll.closesAt)} UTC`),
             ],
         });
     }
