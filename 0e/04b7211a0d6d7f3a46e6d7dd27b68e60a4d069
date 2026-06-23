@@ -1,0 +1,14 @@
+app.json
+  h_4c386397e672f4 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "0e04b7211a0d6d7f3a46e6d7dd27b68e60a4d069",
+  "prompts": {},
+  "humans": {
+    "h_4c386397e672f4": {
+      "author": "Diego Sampaio <chinello@gmail.com>"
+    }
+  }
+}
