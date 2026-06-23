@@ -1,0 +1,53 @@
+src/PollCommand.ts
+  s_681feb48d6a031::t_7445ed7b4e6ef6 22
+PollApp.ts
+  s_681feb48d6a031::t_c3954aa7153bae 18
+  s_681feb48d6a031::t_dac9996ed880c0 86,92-98
+  s_681feb48d6a031::t_cd9b71d40c949c 137
+src/lib/createPollBlocks.ts
+  s_681feb48d6a031::t_62ddd4d56798b4 39-41,43-44
+  s_681feb48d6a031::t_9d7e9ebb4d3d7a 42
+  s_681feb48d6a031::t_e48c9ed209e138 7-15
+src/lib/finishPollMessage.ts
+  s_681feb48d6a031::t_ccc6edab93732e 3,33
+src/definition.ts
+  s_681feb48d6a031::t_452c4b31472632 22-23
+src/lib/createPollMessage.ts
+  s_681feb48d6a031::t_3c7fb8dc7ba79f 54,56
+  s_681feb48d6a031::t_f7eadced3dd474 83
+  s_681feb48d6a031::t_cdce84c92ae486 9
+  s_681feb48d6a031::t_1ab6ba665582c9 97-109
+  s_681feb48d6a031::t_1650b0404023a1 57-59
+src/lib/createPollModal.ts
+  s_681feb48d6a031::t_01514141f4bb09 88
+  s_681feb48d6a031::t_9b7787c2e5bfd8 54
+  s_681feb48d6a031::t_186e7e63bb786f 1,8-12,20,23,35-44
+  s_681feb48d6a031::t_9bc9e8a7bd4879 28
+  s_681feb48d6a031::t_b9e1f9992ac209 128,166
+  s_681feb48d6a031::t_03713de6b16592 169-183
+  s_681feb48d6a031::t_4e2bcf4f429c77 13-19
+  s_681feb48d6a031::t_b8ead81a334364 123-127,129-165,167-168
+src/lib/closePoll.ts
+  s_681feb48d6a031::t_28c550c85b4a39 36
+  s_681feb48d6a031::t_1fbc1d196425bc 1-35,37-47
+src/lib/closePollProcessor.ts
+  s_681feb48d6a031::t_8d3fc4bbb1f31b 1-36
+src/lib/parseCloseSchedule.ts
+  s_681feb48d6a031::t_c7f55eaa4d977f 1-92
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "65af9919dc8903667d09cc8fb454793ebc6a2f6a",
+  "prompts": {},
+  "sessions": {
+    "s_681feb48d6a031": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f6942db9-4e31-4889-9ce1-6ccfb43d06b6",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Diego Sampaio <chinello@gmail.com>"
+    }
+  }
+}
