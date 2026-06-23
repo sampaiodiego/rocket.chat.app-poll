@@ -102,7 +102,7 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
                 data: { msgId: messageId },
             });
 
-            if (jobId) {
+            if (typeof jobId === 'string') {
                 poll.closeJobId = jobId;
                 await persistence.updateByAssociation(pollAssociation, poll);
             }
