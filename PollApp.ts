@@ -137,7 +137,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
 
     async executeActionButtonHandler(
         context: UIKitActionButtonInteractionContext,
-        _read: IRead,
+        read: IRead,
         _http: IHttp,
         persistence: IPersistence,
         modify: IModify
@@ -166,6 +166,7 @@ export class PollApp extends App implements IUIKitInteractionHandler {
                 .getInteractionResponder()
                 .openModalViewResponse(await createPollModal({
                     question: '',
+                    read,
                     persistence,
                     modify,
                     data,
