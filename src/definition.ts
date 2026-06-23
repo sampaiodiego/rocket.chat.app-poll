@@ -19,6 +19,8 @@ export interface IPoll {
     confidential?: boolean;
     showResults?: boolean;
     singleChoice?: boolean;
+    closesAt?: number; // epoch ms (UTC) when the poll auto-closes - also used for display
+    closeJobId?: string; // scheduler jobId, so a manual finish can cancel the pending job
 }
 
 export interface IModalContext extends Partial<IUIKitBlockIncomingInteraction> {

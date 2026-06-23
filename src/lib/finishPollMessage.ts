@@ -1,15 +1,7 @@
 import { IModify, IPersistence, IRead } from '@rocket.chat/apps-engine/definition/accessors';
-import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket.chat/apps-engine/definition/metadata';
 
-import { IPoll } from '../definition';
-import { createPollBlocks } from './createPollBlocks';
+import { closePoll } from './closePoll';
 import { getPoll } from './getPoll';
-
-async function finishPoll(poll: IPoll, { persis }: { persis: IPersistence }) {
-    const association = new RocketChatAssociationRecord(RocketChatAssociationModel.MISC, poll.msgId);
-    poll.finished = true;
-    return persis.updateByAssociation(association, poll);
-}
 
 export async function finishPollMessage({ data, read, persistence, modify }: {
     data,
@@ -38,20 +30,7 @@ export async function finishPollMessage({ data, read, persistence, modify }: {
     }
 
     try {
-        await finishPoll(poll, { persis: persistence });
-
-        const message = await modify.getUpdater().message(data.message.id as string, data.user);
-        message.setEditor(message.getSender());
-
-        const block = modify.getCreator().getBlockBuilder();
-
-        const showNames = await read.getEnvironmentReader().getSettings().getById('use-user-name');
-
-        createPollBlocks(block, poll.question, poll.options, poll, showNames.value);
-
-        message.setBlocks(block);
-
-        return modify.getUpdater().finish(message);
+        return await closePoll({ poll, user: data.user, read, persistence, modify });
     } catch (e) {
         console.error('Error', e);
     }
