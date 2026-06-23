@@ -1,0 +1,26 @@
+package.json
+  s_d54f8a3dc6b70d::t_b3014e0bede806 7
+  s_d54f8a3dc6b70d::t_6363ea86b3fe54 3
+app.json
+  s_d54f8a3dc6b70d::t_410c6bf5e8f4f1 3
+  s_d54f8a3dc6b70d::t_083705b6a86b3d 4
+README.md
+  s_d54f8a3dc6b70d::t_cf4db95ce845d3 8
+  s_d54f8a3dc6b70d::t_aab63d36234285 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "90a4ac7f6c4596002c4bc87189941d654e988f33",
+  "prompts": {},
+  "sessions": {
+    "s_d54f8a3dc6b70d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "46568402-5d1c-4927-ac68-95f2e5092504",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Diego Sampaio <chinello@gmail.com>"
+    }
+  }
+}

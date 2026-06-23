@@ -1,0 +1,19 @@
+i18n/en.json
+  s_2140663160152e::t_6508f5452d3383 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "3d2f393b113c823d53064f835c04f427e84fc325",
+  "prompts": {},
+  "sessions": {
+    "s_2140663160152e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "20e7e8ff-e6df-44dd-bdca-480b250dacd0",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Diego Sampaio <chinello@gmail.com>"
+    }
+  }
+}
