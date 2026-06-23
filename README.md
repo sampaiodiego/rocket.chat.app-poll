@@ -4,7 +4,8 @@
 
 Poll Version | Minimum Rocket.Chat Version
 ------------ | -------------
-v2.x+ | **3.0.0**
+v4.x+ | **4.3.0**
+v2.x - v3.x | **3.0.0**
 v1.x | **0.74.1**
 
 ## Features

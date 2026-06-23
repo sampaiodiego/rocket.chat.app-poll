@@ -6,11 +6,14 @@ import {
     IPersistence,
     IRead,
 } from '@rocket.chat/apps-engine/definition/accessors';
+import { UIActionButtonContext } from "@rocket.chat/apps-engine/definition/ui";
 import { App } from '@rocket.chat/apps-engine/definition/App';
 import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
 import { SettingType } from '@rocket.chat/apps-engine/definition/settings';
 import {
     IUIKitInteractionHandler,
+    IUIKitResponse,
+    UIKitActionButtonInteractionContext,
     UIKitBlockInteractionContext,
     UIKitViewSubmitInteractionContext,
 } from '@rocket.chat/apps-engine/definition/uikit';
@@ -132,6 +135,50 @@ export class PollApp extends App implements IUIKitInteractionHandler {
         };
     }
 
+    async executeActionButtonHandler(
+        context: UIKitActionButtonInteractionContext,
+        read: IRead,
+        _http: IHttp,
+        persistence: IPersistence,
+        modify: IModify
+    ): Promise<IUIKitResponse> {
+        const interactionData = context.getInteractionData();
+
+        try {
+            if (interactionData.buttonContext !== 'messageBoxAction') {
+                return {
+                    success: false,
+                };
+            }
+
+            if (interactionData.actionId !== 'message-box-create-poll') {
+                return {
+                    success: false,
+                };
+            }
+
+            const data = {
+                room: interactionData.room,
+                threadId: (interactionData as any).threadId || undefined,
+            };
+
+            return context
+                .getInteractionResponder()
+                .openModalViewResponse(await createPollModal({
+                    question: '',
+                    read,
+                    persistence,
+                    modify,
+                    data,
+                }));
+
+        } catch (error) {
+            return {
+                success: false,
+            };
+        }
+    }
+
     public async initialize(configuration: IConfigurationExtend): Promise<void> {
         await configuration.slashCommands.provideSlashCommand(new PollCommand());
         await configuration.scheduler.registerProcessors([closePollProcessor]);
@@ -143,6 +190,11 @@ export class PollApp extends App implements IUIKitInteractionHandler {
             type: SettingType.BOOLEAN,
             public: true,
             packageValue: false,
+        });
+        await configuration.ui.registerButton({
+            actionId: 'message-box-create-poll',
+            labelI18n: "create_poll_button",
+            context: UIActionButtonContext.MESSAGE_BOX_ACTION,
         });
     }
 }
