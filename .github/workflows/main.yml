@@ -13,12 +13,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.2
+        uses: actions/setup-node@v4
         with:
-          node-version: '12'
+          node-version: '22'
 
       - name: Install dependencies
         run: npm i
