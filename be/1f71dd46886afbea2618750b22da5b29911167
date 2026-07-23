@@ -1,0 +1,19 @@
+.github/workflows/release.yml
+  s_fcbb51db5bb171::t_1d3649eb033d4a 1-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "be1f71dd46886afbea2618750b22da5b29911167",
+  "prompts": {},
+  "sessions": {
+    "s_fcbb51db5bb171": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b09692de-9f1f-4d4d-82f7-99620f995be9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Diego Sampaio <chinello@gmail.com>"
+    }
+  }
+}
