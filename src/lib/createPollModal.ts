@@ -3,6 +3,7 @@ import { RocketChatAssociationModel, RocketChatAssociationRecord } from '@rocket
 import { IUIKitModalViewParam } from '@rocket.chat/apps-engine/definition/uikit/UIKitInteractionResponder';
 
 import { IModalContext } from '../definition';
+import { markdown, plainText } from './i18n';
 import { uuid } from './uuid';
 
 interface IModalState {
@@ -47,7 +48,7 @@ export async function createPollModal({ id = '', question, read, persistence, da
     block.addInputBlock({
         blockId: 'poll',
         element: block.newPlainTextInputElement({ initialValue: question, actionId: 'question' }),
-        label: block.newPlainTextObject('Insert your question'),
+        label: plainText('poll_question_label'),
     })
     .addDividerBlock();
 
@@ -57,7 +58,7 @@ export async function createPollModal({ id = '', question, read, persistence, da
             optional: true,
             element: block.newPlainTextInputElement({
                 actionId: `option-${i}`,
-                placeholder: block.newPlainTextObject('Insert an option'),
+                placeholder: plainText('poll_option_placeholder'),
             }),
             label: block.newPlainTextObject(''),
         });
@@ -68,53 +69,35 @@ export async function createPollModal({ id = '', question, read, persistence, da
             blockId: 'config',
             elements: [
                 block.newStaticSelectElement({
-                    placeholder: block.newPlainTextObject('Multiple choices'),
+                    placeholder: plainText('poll_mode_multiple'),
                     actionId: 'mode',
                     initialValue: 'multiple',
                     options: [
-                        {
-                            text: block.newPlainTextObject('Multiple choices'),
-                            value: 'multiple',
-                        },
-                        {
-                            text: block.newPlainTextObject('Single choice'),
-                            value: 'single',
-                        },
+                        { text: plainText('poll_mode_multiple'), value: 'multiple' },
+                        { text: plainText('poll_mode_single'), value: 'single' },
                     ],
                 }),
                 block.newButtonElement({
                     actionId: 'addChoice',
-                    text: block.newPlainTextObject('Add a choice'),
+                    text: plainText('poll_add_choice'),
                     value: String(effectiveOptions + 1),
                 }),
                 block.newStaticSelectElement({
-                    placeholder: block.newPlainTextObject('Open vote'),
+                    placeholder: plainText('poll_visibility_open'),
                     actionId: 'visibility',
                     initialValue: 'open',
                     options: [
-                        {
-                            text: block.newPlainTextObject('Open vote'),
-                            value: 'open',
-                        },
-                        {
-                            text: block.newPlainTextObject('Confidential vote'),
-                            value: 'confidential',
-                        },
+                        { text: plainText('poll_visibility_open'), value: 'open' },
+                        { text: plainText('poll_visibility_confidential'), value: 'confidential' },
                     ],
                 }),
                 block.newStaticSelectElement({
-                    placeholder: block.newPlainTextObject('Always shows results'),
+                    placeholder: plainText('poll_show_results_always'),
                     actionId: 'showResults',
                     initialValue: 'always',
                     options: [
-                        {
-                            text: block.newPlainTextObject('Always shows results'),
-                            value: 'always',
-                        },
-                        {
-                            text: block.newPlainTextObject('Show results only after finished'),
-                            value: 'finished',
-                        },
+                        { text: plainText('poll_show_results_always'), value: 'always' },
+                        { text: plainText('poll_show_results_finished'), value: 'finished' },
                     ],
                 }),
             ],
@@ -123,45 +106,24 @@ export async function createPollModal({ id = '', question, read, persistence, da
     // "Close automatically" section: the duration select always lives here, and
     // when "Custom…" is chosen the free-text field is shown beside it.
     block.addSectionBlock({
-        text: block.newMarkdownTextObject('*Close automatically*'),
+        text: markdown('poll_close_automatically'),
     });
 
     block.addActionsBlock({
         blockId: 'schedule',
         elements: [
             block.newStaticSelectElement({
-                placeholder: block.newPlainTextObject('No automatic closing'),
+                placeholder: plainText('poll_duration_off'),
                 actionId: 'duration',
                 initialValue: effectiveDuration,
                 options: [
-                    {
-                        text: block.newPlainTextObject('No automatic closing'),
-                        value: 'off',
-                    },
-                    {
-                        text: block.newPlainTextObject('Close in 1 hour'),
-                        value: '1h',
-                    },
-                    {
-                        text: block.newPlainTextObject('Close in 6 hours'),
-                        value: '6h',
-                    },
-                    {
-                        text: block.newPlainTextObject('Close in 1 day'),
-                        value: '1d',
-                    },
-                    {
-                        text: block.newPlainTextObject('Close in 3 days'),
-                        value: '3d',
-                    },
-                    {
-                        text: block.newPlainTextObject('Close in 1 week'),
-                        value: '1w',
-                    },
-                    {
-                        text: block.newPlainTextObject('Custom…'),
-                        value: 'custom',
-                    },
+                    { text: plainText('poll_duration_off'), value: 'off' },
+                    { text: plainText('poll_duration_1h'), value: '1h' },
+                    { text: plainText('poll_duration_6h'), value: '6h' },
+                    { text: plainText('poll_duration_1d'), value: '1d' },
+                    { text: plainText('poll_duration_3d'), value: '3d' },
+                    { text: plainText('poll_duration_1w'), value: '1w' },
+                    { text: plainText('poll_duration_custom'), value: 'custom' },
                 ],
             }),
         ],
@@ -176,20 +138,20 @@ export async function createPollModal({ id = '', question, read, persistence, da
             element: block.newPlainTextInputElement({
                 actionId: 'closeAt',
                 initialValue: nowUtcInputValue(),
-                placeholder: block.newPlainTextObject('UTC · e.g. "3 hours" or "2026-06-30 18:00"'),
+                placeholder: plainText('poll_custom_placeholder'),
             }),
-            label: block.newPlainTextObject('Close automatically at (UTC)'),
+            label: plainText('poll_custom_label'),
         });
     }
 
     return {
         id: viewId,
-        title: block.newPlainTextObject('Create a poll'),
+        title: plainText('poll_modal_title'),
         submit: block.newButtonElement({
-            text: block.newPlainTextObject('Create'),
+            text: plainText('poll_submit'),
         }),
         close: block.newButtonElement({
-            text: block.newPlainTextObject('Dismiss'),
+            text: plainText('poll_dismiss'),
         }),
         blocks: block.getBlocks(),
     };

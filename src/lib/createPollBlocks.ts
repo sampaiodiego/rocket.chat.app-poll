@@ -3,6 +3,7 @@ import { BlockBuilder, BlockElementType } from '@rocket.chat/apps-engine/definit
 import { IPoll } from '../definition';
 import { buildVoteGraph } from './buildVoteGraph';
 import { buildVoters } from './buildVoters';
+import { markdown, plainText } from './i18n';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -21,10 +22,7 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
                 type: BlockElementType.OVERFLOW_MENU,
                 actionId: 'finish',
                 options: [
-                    {
-                        text: block.newPlainTextObject('Finish poll'),
-                        value: 'finish',
-                    },
+                    { text: plainText('poll_finish'), value: 'finish' },
                 ],
             },
         },
@@ -33,13 +31,13 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
     if (poll.finished) {
         block.addContextBlock({
             elements: [
-                block.newMarkdownTextObject(`The poll has been finished at ${new Date().toUTCString()}`),
+                markdown('poll_finished_at', { date: new Date().toUTCString() }),
             ],
         });
     } else if (poll.closesAt) {
         block.addContextBlock({
             elements: [
-                block.newMarkdownTextObject(`⏰ Closes ${formatCloseTime(poll.closesAt)} UTC`),
+                markdown('poll_closes_at', { time: formatCloseTime(poll.closesAt) }),
             ],
         });
     }
@@ -53,7 +51,7 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
                     accessory: {
                     type: BlockElementType.BUTTON,
                     actionId: 'vote',
-                    text: block.newPlainTextObject('Vote'),
+                    text: plainText('poll_vote'),
                     value: String(index),
                 },
             },
@@ -85,7 +83,7 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
 
         block.addContextBlock({
             elements: [
-                block.newMarkdownTextObject(voters),
+                voters,
             ],
         });
     });

@@ -1,18 +1,17 @@
+import { ITextObject } from '@rocket.chat/apps-engine/definition/uikit';
+
 import { IVoter } from '../definition';
+import { markdown } from './i18n';
 
 const votersNames = (voters: IVoter['voters'], showNames: boolean) =>
     voters.map(({ name, username }) => showNames ? name : username).join(' ');
 
-export function buildVoters(votes: IVoter, showNames: boolean) {
-    if (!votes) {
-        return '';
+export function buildVoters(votes: IVoter, showNames: boolean): ITextObject | undefined {
+    if (!votes || votes.quantity === 0) {
+        return undefined;
     }
 
-    if (votes.quantity === 0) {
-        return '';
-    }
+    const names = votersNames(votes.voters, showNames);
 
-    const votesStr = votes.quantity === 1 ? 'vote' : 'votes';
-
-    return `${ votes.quantity } ${ votesStr } - ${ votersNames(votes.voters, showNames) }`;
+    return markdown('poll_voters', { count: votes.quantity, voters: names });
 }

@@ -184,8 +184,8 @@ export class PollApp extends App implements IUIKitInteractionHandler {
         await configuration.scheduler.registerProcessors([closePollProcessor]);
         await configuration.settings.provideSetting({
             id : 'use-user-name',
-            i18nLabel: 'Use name attribute to display voters, instead of username',
-            i18nDescription: 'When checked, display voters as full user names instead of username',
+            i18nLabel: 'poll_setting_use_user_name_label',
+            i18nDescription: 'poll_setting_use_user_name_description',
             required: false,
             type: SettingType.BOOLEAN,
             public: true,
