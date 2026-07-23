@@ -1,0 +1,45 @@
+src/lib/createPollBlocks.ts
+  s_cc31a88b1a0c64::t_565e53a4c664e5 6,25,34,40,54
+  s_cc31a88b1a0c64::t_402fa283695177 86
+i18n/en.json
+  s_cc31a88b1a0c64::t_f7b7e4461f3018 4-30,35-41
+  s_cc31a88b1a0c64::t_60bdccf7285ebd 31-34
+src/lib/createPollModal.ts
+  s_cc31a88b1a0c64::t_f876d29070b317 6,51,61,72,76-77,82,86,90-91,95,99-100,109,116,120-126,141,143,149,151,154
+src/lib/i18n.ts
+  s_cc31a88b1a0c64::t_20b47bccfe645e 1-18
+i18n/pt.json
+  s_cc31a88b1a0c64::t_0f5365a19dc96f 1-30,35-42
+  s_cc31a88b1a0c64::t_39bc1fc5bcc900 31-34
+PollApp.ts
+  s_cc31a88b1a0c64::t_7e958d165807af 187-188
+app.json
+  h_4c386397e672f4 3
+src/lib/buildVoters.ts
+  s_cc31a88b1a0c64::t_90ba76d22ce3a7 1-2,9-11,14
+  s_cc31a88b1a0c64::t_bf0115bcc26fc1 4,16
+i18n/pt-BR.json
+  s_cc31a88b1a0c64::t_3844a8d3c82f98 1-30,35-42
+  s_cc31a88b1a0c64::t_72977082cbd018 31-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "43a552b596a50406a80ef11c64380ccc3db5a61e",
+  "prompts": {},
+  "humans": {
+    "h_4c386397e672f4": {
+      "author": "Diego Sampaio <chinello@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_cc31a88b1a0c64": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d1275f81-6274-4fc0-becc-6d35befefbb8",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Diego Sampaio <chinello@gmail.com>"
+    }
+  }
+}
