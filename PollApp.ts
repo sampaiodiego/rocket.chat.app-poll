@@ -15,6 +15,7 @@ import {
     IUIKitResponse,
     UIKitActionButtonInteractionContext,
     UIKitBlockInteractionContext,
+    UIKitInteractionType,
     UIKitViewSubmitInteractionContext,
 } from '@rocket.chat/apps-engine/definition/uikit';
 
@@ -68,6 +69,10 @@ export class PollApp extends App implements IUIKitInteractionHandler {
 
         return {
             success: true,
+            type: UIKitInteractionType.MODAL_CLOSE,
+            triggerId: data.triggerId,
+            appId: data.appId,
+            view: data.view,
         };
     }
 
