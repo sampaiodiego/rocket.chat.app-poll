@@ -52,13 +52,14 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
 
     try {
         const { config = { mode: 'multiple', visibility: 'open', showResults: 'always' }, schedule = {} } = state;
-        const { mode = 'multiple', visibility = 'open', showResults = 'always' } = config;
+        const { mode = 'multiple', visibility = 'open', showResults = 'always', chartType = 'bar' } = config;
         const { duration = 'off', closeAt } = schedule;
 
         // Throws a field-error object on invalid/past input, surfaced via viewErrorResponse.
         const closesAt = parseCloseSchedule(duration, closeAt);
 
         const showNames = await read.getEnvironmentReader().getSettings().getById('use-user-name');
+        const useChart = await read.getEnvironmentReader().getSettings().getById('use-chart');
 
         const builder = modify.getCreator().startMessage()
             .setUsernameAlias((showNames.value && data.user.name) || data.user.username)
@@ -81,12 +82,11 @@ export async function createPollMessage(data: IUIKitViewSubmitIncomingInteractio
             singleChoice: mode === 'single',
             showResults: showResults === 'always',
             closesAt,
+            chartType: chartType === 'pie' ? 'pie' : 'bar',
         };
 
         const block = modify.getCreator().getBlockBuilder();
-        createPollBlocks(block, poll.question, options, poll, showNames.value);
-
-        builder.setBlocks(block);
+        builder.setBlocks(createPollBlocks(block, poll.question, options, poll, showNames.value, useChart.value));
 
         const messageId = await modify.getCreator().finish(builder);
         poll.msgId = messageId;

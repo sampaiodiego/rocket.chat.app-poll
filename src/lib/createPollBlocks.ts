@@ -1,6 +1,7 @@
-import { BlockBuilder, BlockElementType } from '@rocket.chat/apps-engine/definition/uikit';
+import { BlockBuilder, BlockElementType, IBlock } from '@rocket.chat/apps-engine/definition/uikit';
 
 import { IPoll } from '../definition';
+import { buildVoteChart } from './buildVoteChart';
 import { buildVoteGraph } from './buildVoteGraph';
 import { buildVoters } from './buildVoters';
 import { markdown, plainText } from './i18n';
@@ -14,7 +15,16 @@ function formatCloseTime(closesAt: number): string {
     return `${date.getUTCDate()} ${MONTHS[date.getUTCMonth()]} ${date.getUTCFullYear()}, ${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}`;
 }
 
-export function createPollBlocks(block: BlockBuilder, question: string, options: Array<any>, poll: IPoll, showNames: boolean) {
+export function createPollBlocks(
+    block: BlockBuilder,
+    question: string,
+    options: Array<any>,
+    poll: IPoll,
+    showNames: boolean,
+    useChart: boolean,
+): Array<IBlock> {
+    const chart = useChart && (poll.showResults || poll.finished) ? buildVoteChart(poll) : undefined;
+
     block.addSectionBlock({
         text: block.newPlainTextObject(question),
         ...!poll.finished && {
@@ -65,12 +75,14 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
             return;
         }
 
-        const graph = buildVoteGraph(poll.votes[index], poll.totalVotes);
-        block.addContextBlock({
-            elements: [
-                block.newMarkdownTextObject(graph),
-            ],
-        });
+        if (!chart) {
+            const graph = buildVoteGraph(poll.votes[index], poll.totalVotes);
+            block.addContextBlock({
+                elements: [
+                    block.newMarkdownTextObject(graph),
+                ],
+            });
+        }
 
         if (poll.confidential) {
             return;
@@ -87,4 +99,7 @@ export function createPollBlocks(block: BlockBuilder, question: string, options:
             ],
         });
     });
+
+    // BlockBuilder can't add a data_visualization block, so it goes in raw after the options.
+    return chart ? [...block.getBlocks(), chart as unknown as IBlock] : block.getBlocks();
 }

@@ -21,6 +21,28 @@ export interface IPoll {
     singleChoice?: boolean;
     closesAt?: number; // epoch ms (UTC) when the poll auto-closes - also used for display
     closeJobId?: string; // scheduler jobId, so a manual finish can cancel the pending job
+    chartType?: ChartType; // missing on polls created before charts, rendered as 'bar'
+}
+
+export type ChartType = 'bar' | 'pie';
+
+interface IChartPoint {
+    label: string;
+    value: number;
+}
+
+// Mirrors ui-kit's DataVisualizationBlock; drop it once apps-engine ships those types.
+export interface IDataVisualizationBlock {
+    type: 'data_visualization';
+    title: string;
+    chart: {
+        type: 'pie';
+        segments: Array<IChartPoint>;
+    } | {
+        type: 'bar';
+        series: Array<{ name: string; data: Array<IChartPoint> }>;
+        axis_config: { categories: Array<string> };
+    };
 }
 
 export interface IModalContext extends Partial<IUIKitBlockIncomingInteraction> {
