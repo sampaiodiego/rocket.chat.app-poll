@@ -191,6 +191,15 @@ export class PollApp extends App implements IUIKitInteractionHandler {
             public: true,
             packageValue: false,
         });
+        await configuration.settings.provideSetting({
+            id : 'use-chart',
+            i18nLabel: 'poll_setting_use_chart_label',
+            i18nDescription: 'poll_setting_use_chart_description',
+            required: false,
+            type: SettingType.BOOLEAN,
+            public: true,
+            packageValue: false,
+        });
         await configuration.ui.registerButton({
             actionId: 'message-box-create-poll',
             labelI18n: "create_poll_button",

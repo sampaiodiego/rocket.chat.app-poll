@@ -44,6 +44,8 @@ export async function createPollModal({ id = '', question, read, persistence, da
 
     await persistence.updateByAssociation(stateAssociation, { options: effectiveOptions, duration: effectiveDuration }, true);
 
+    const useChart = await read.getEnvironmentReader().getSettings().getById('use-chart');
+
     const block = modify.getCreator().getBlockBuilder();
     block.addInputBlock({
         blockId: 'poll',
@@ -100,6 +102,17 @@ export async function createPollModal({ id = '', question, read, persistence, da
                         { text: plainText('poll_show_results_finished'), value: 'finished' },
                     ],
                 }),
+                ...useChart.value ? [
+                    block.newStaticSelectElement({
+                        placeholder: plainText('poll_chart_bar'),
+                        actionId: 'chartType',
+                        initialValue: 'bar',
+                        options: [
+                            { text: plainText('poll_chart_bar'), value: 'bar' },
+                            { text: plainText('poll_chart_pie'), value: 'pie' },
+                        ],
+                    }),
+                ] : [],
             ],
         });
 

@@ -14,6 +14,7 @@ v1.x | **0.74.1**
 - Single/multiple choices
 - Confidential votes (don't show who voted for what)
 - Hide results until the poll is finished
+- Results as a bar or pie chart (enable the `Show results as a chart` app setting; requires a Rocket.Chat version with UI Kit charts)
 
 ## Installing
 
